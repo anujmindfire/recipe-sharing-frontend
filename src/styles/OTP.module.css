@@ -1,0 +1,119 @@
+.container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: #262626;
+    color: #adadad;
+    padding: 20px;
+    font: 400 16px Plus Jakarta Sans, -apple-system, Roboto, Helvetica, sans-serif;
+    background-image: url('https://img.freepik.com/free-photo/olive-oil-cherry-tomato-with-raw-italian-pasta-black-backdrop_23-2148195021.jpg?size=626&ext=jpg&ga=GA1.1.1191947113.1728852957&semt=ais_hybrid');
+    background-size: cover; 
+    background-position: center;
+}
+
+.formWrapper {
+    display: flex;
+    width: 100%;
+    max-width: 960px;
+    padding: 20px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    background-color: #1a1a1a; 
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    margin: 0 auto;
+    color: #f2f4f7;
+}
+
+@media (max-width: 991px) {
+    .container {
+        max-width: 100%;
+        padding-bottom: 100px;
+    }
+}
+
+.formFields {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.formTitle {
+    margin-bottom: 24px;
+    text-align: center;
+    color: #fafafa;
+    font-weight: 600;
+}
+
+.inputContainer {
+    display: flex;
+    gap: 10px;
+}
+
+@media (max-width: 640px) {
+    .card {
+        max-height: 90vh;
+    }
+}
+
+.input {
+    width: 100%;
+    height: 48px;
+    font-size: 18px;
+    text-align: center;
+    border-radius: 4px;
+    border: none;
+    background-color: #262626;
+    color: #f2f4f7;
+    transition: background-color 0.2s ease;
+
+    &:focus {
+        outline: none;
+        background-color: #d2c6ff;
+    }
+}
+
+.resendText {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.resendButton {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    font-weight: bold;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.goBackButton {
+    margin-top: 16px;
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    font-size: 14px;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.separator {
+    margin: 20px 0;
+    border: 1px solid #444;
+}

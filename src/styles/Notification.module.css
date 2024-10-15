@@ -1,0 +1,81 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 300px; 
+    height: 100%; 
+    background-color: #262626; 
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+    transform: translateX(100%); 
+    transition: transform 0.3s ease; 
+    z-index: 1000; 
+}
+
+.open {
+    transform: translateX(0); 
+}
+
+.sidebarHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    color: #fafafa;
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #fafafa; 
+}
+
+.notificationList {
+    padding: 16px;
+    max-height: calc(100% - 50px); 
+    overflow-y: auto; 
+}
+
+.notificationItem {
+    padding: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notificationItem:last-child {
+    border-bottom: none; 
+}
+
+.notificationTitle {
+    margin: 0; 
+    font-size: 16px; 
+    color: #fafafa; 
+}
+
+.notificationMessage {
+    margin: 3px 0 0;
+    color: #ccc; 
+}
+
+.deleteButton {
+    background: none;
+    border: none;
+    color: #fafafa;
+    cursor: pointer;
+    font-size: 20px;
+    margin-left: 10px;
+}
+
+.deleteButton:hover {
+    color: rgb(240, 68, 56);
+}
+
+.noNotifications {
+    color: #ccc; 
+    text-align: center; 
+}

@@ -1,0 +1,16 @@
+.validationWrapper {
+    display: flex;
+    align-items: center;
+    margin-top: -5px;
+    color: rgb(240, 68, 56);
+}
+
+.validationIcon {
+    margin-right: 8px;
+    margin-top: 3px;
+    color: rgb(240, 68, 56);
+}
+
+.validationError {
+    font-size: 0.8rem;
+}

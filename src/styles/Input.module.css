@@ -1,0 +1,43 @@
+.inputContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.label {
+    color: #fafafa;
+}
+
+.input {
+    border-radius: 10px;
+    padding: 12px;
+    width: 100%;
+    font-size: 16px; 
+    background-color: #262626;
+    color: #fafafa;
+    border: 1px solid rgba(255, 255, 255, 0.3); 
+}
+
+.inputContainer button {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #9c75ff;
+    font-size: 18px;
+}
+
+.input:focus {
+    border-color: #4299e1;
+}
+
+.input:disabled {
+    background-color: #262626; 
+    color: #fafafa;
+    cursor: not-allowed;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}

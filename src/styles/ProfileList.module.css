@@ -1,0 +1,87 @@
+.profileList {
+    background-color: #262626;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    min-height: 800px;
+    width: 100%;
+    position: relative;
+}
+
+.scrollContainer {
+    overflow-y: auto;
+    max-height: calc(100vh - 30px);
+    padding: 16px;
+}
+
+.profileCard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #262626;
+    padding: 10px;
+    border-bottom: 1px solid #e6e6e6;
+    flex-wrap: nowrap;
+}
+
+.profileInfo {
+    display: flex;
+    align-items: center;
+}
+
+.profileImage {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.textContainer {
+    margin-left: 10px;
+    color: #f5f0e5;
+}
+
+.followButtonContainer {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.button {
+    border-radius: 16px;
+    background-color: #f5f0e5;
+    display: flex;
+    min-width: 84px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    transition: background-color 0.3s ease;
+}
+
+.buttonText {
+    font-size: 14px;
+    font-weight: 500;
+    color: #a1824a;
+}
+
+.button:hover {
+    background-color: rgba(230, 230, 230, 1);
+}
+
+.noDataMessage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    font-size: 1.5rem;
+    color: #555;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .profileCard {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+}

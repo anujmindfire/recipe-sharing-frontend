@@ -1,0 +1,396 @@
+/* Recipe Card Page */
+
+.recipeGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.cardContainer {
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+    background-color: #f5f0e5;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.cardContainer:hover {
+    transform: scale(1.05);
+}
+
+.imageContainer {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 12px 12px 0 0;
+}
+
+.textContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+}
+
+.title {
+    font-size: 1.25rem;
+}
+
+@media (max-width: 991px) {
+    .recipeGrid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+}
+
+/* Recipe Listing Page */
+
+.recipeApp {
+    background-color: #262626;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    min-height: 100vh; 
+    width: 100%;
+    overflow: hidden;
+}
+
+.mainContent {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 20px 160px;
+    width: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.noDataMessage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh; 
+    font-size: 1.5rem;
+    color: #555;
+    text-align: center;
+}
+
+@media (max-width: 991px) {
+    .mainContent {
+        padding: 20px;
+    }
+}
+
+/* Recipe Detail Page */
+
+.recipeReview {
+    background-color: #262626;
+    min-height: 100vh; 
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.recipeContent {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 160px;
+    max-width: 960px;
+    margin: 0 auto;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.recipeHeader {
+    font: 700 28px/1 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+    margin: 50px 0px;
+}
+
+.arrowLeft {
+    cursor: pointer;
+    color: #f5f0e5;
+    margin-left: 20px
+}
+
+.recipeImageContainer {
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.recipeFullImage {
+    width: 100%;
+    border-radius: 12px;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+}
+
+.titleContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: -30px;
+    padding: 0 20px;
+    position: relative;
+}
+
+.recipeTitle {
+    min-height: 60px;
+    color: #f5f0e5;
+    padding: 20px 0px 12px;
+    font: 700 22px/1 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+}
+
+.iconContainer {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    position: absolute;
+    right: 20px;
+    top: 0;
+    color: #f5f0e5;
+}
+
+.heartIcon {
+    cursor: pointer;
+    margin-right: 8px;
+    cursor: pointer
+}
+
+.liked {
+    color: black;
+}
+
+.recipeDescription {
+    color: #a1824a;
+    padding: 4px 16px 12px;
+    font: 400 14px 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+}
+
+.recipeMetaInfo {
+    display: flex;
+    gap: 24px;
+    padding: 16px;
+    font: 400 14px 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+}
+
+.metaItem {
+    border-top: 1px solid #e5e8eb;
+    padding-top: 20px;
+}
+
+.metaTitle {
+    color: #a1824a;
+    margin-bottom: 8px;
+}
+
+.metaValue {
+    color: #f5f0e5;
+}
+
+.recipeIngredients,
+.recipeSteps {
+    padding: 16px;
+    font: 400 14px 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+}
+
+.ingredientsTitle,
+.stepTitle {
+    color: #a1824a;
+    margin-bottom: 8px;
+}
+
+.ingredientsList,
+.stepDescription {
+    color: #f5f0e5;
+}
+
+.stepItem {
+    border-top: 1px solid #e5e8eb;
+    padding: 20px 0;
+}
+
+.ratingOverview {
+    display: flex;
+    gap: 32px;
+    padding: 16px;
+    flex-wrap: wrap;
+}
+
+.overallRating {
+    min-width: 240px;
+}
+
+.ratingScore {
+    font: 800 36px/1 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+    color: #f5f0e5;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+}
+
+.starRating {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 8px;  
+}
+
+.starIcon {
+    width: 18px;
+    height: 18px;
+    color: #a1824a;
+}
+
+.reviewCount {
+    color: #f5f0e5;
+    font: 400 16px 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+}
+
+.ratingDistribution {
+    flex: 1;
+    min-width: 200px;
+    max-width: 400px;
+}
+
+.ratingBar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.ratingLabel {
+    color: #f5f0e5;
+    width: 20px;
+    font: 400 14px 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+}
+
+.ratingBarContainer {
+    flex: 1;
+    height: 8px;
+    background-color: #e8decf;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.ratingBarFill {
+    height: 100%;
+    background-color: #009963;
+    border-radius: 4px;
+}
+
+.ratingPercentage {
+    color: #a1824a;
+    width: 40px;
+    text-align: right;
+    font: 400 14px 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+}
+
+.reviews {
+    padding: 16px;
+}
+
+.heading {
+    color: #f5f0e5;
+}
+
+.reviewItem {
+    margin-bottom: 32px;
+}
+
+.reviewHeader {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.profileCircle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #009963;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.reviewerInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.reviewerName {
+    font: 500 16px 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+    color: #f5f0e5;
+}
+
+.reviewDate {
+    font: 400 14px 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+    color: #f5f0e5;
+}
+
+.reviewRating {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 12px;
+}
+
+.reviewComment {
+    color: #f5f0e5;
+    font: 400 16px 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+    margin-bottom: 12px;
+}
+
+.feedbackForm {
+    background-color: #f5f0e5;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.feedbackFormContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.feedbackTitle {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.ratingSelection {
+    display: flex;
+    cursor: pointer;
+}
+
+.feedbackTextBox {
+    resize: none;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.errorSpacing {
+    margin-bottom: 8px;
+}
+
+@media (max-width: 991px) {
+    .recipeContent {
+        padding: 20px;
+    }
+
+    .recipeTitle {
+        display: block;
+        padding: 20px 16px 12px;
+    }
+
+    .ratingDistribution {
+        width: 100%;
+        max-width: none;
+    }
+}

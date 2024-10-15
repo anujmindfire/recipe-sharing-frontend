@@ -1,0 +1,137 @@
+.container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: #262626;
+    color: #adadad;
+    padding: 20px;
+    font: 400 16px 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+    box-sizing: border-box;
+    background-image: url('https://img.freepik.com/free-photo/olive-oil-cherry-tomato-with-raw-italian-pasta-black-backdrop_23-2148195021.jpg?size=626&ext=jpg&ga=GA1.1.1191947113.1728852957&semt=ais_hybrid');
+    background-size: cover; 
+    background-position: center;
+}
+
+.formWrapper {
+    display: flex;
+    width: 100%;
+    max-width: 960px;
+    padding: 20px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.card {
+    background-color: #1a1a1a;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    margin: 0 auto;
+    color: #f2f4f7;
+}
+
+.formFields {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.formTitle {
+    margin-bottom: 24px;
+    text-align: center;
+    color: #fafafa;
+    font-weight: 600;
+}
+
+.signInText {
+    text-align: center;
+    margin-top: 16px;
+    color: #fafafa;
+}
+
+.signInLink {
+    color: #9c75ff;
+    text-decoration: none;
+}
+
+@media (max-width: 991px) {
+    .formWrapper {
+        max-width: 100%;
+        padding-bottom: 100px;
+    }
+
+    .container {
+        padding-left: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .card {
+        max-width: 350px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        max-width: 320px;
+        padding: 20px;
+    }
+
+    .formTitle {
+        font-size: 1.5rem;
+    }
+
+    .formFields {
+        gap: 12px;
+    }
+}
+
+/* Edit Profile Page */
+.editContainer {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: #262626;
+    color: #adadad;
+    padding: 20px;
+    font: 400 16px 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
+.formSection {
+    display: flex;
+    width: 100%;
+    max-width: 600px;
+    padding: 40px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 210px;
+}
+
+.inputFields {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 16px;
+    padding: 10px 0;
+}
+
+.formFieldGroup {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
