@@ -1,1 +1,1 @@
-export const backendURL = 'http://foodie-backend-wi9m.onrender.com/api';
+export const backendURL = 'https://foodie-backend-wi9m.onrender.com/api';
