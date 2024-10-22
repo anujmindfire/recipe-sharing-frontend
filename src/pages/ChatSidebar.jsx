@@ -3,17 +3,18 @@ import styles from '../styles/ChatSidebar.module.css';
 import Loader from '../components/Loader';
 import SearchFilterBar from '../components/SearchFilterBar';
 import Message from '../pages/Message';
-import { backendURL } from '../api/url';
-import { refreshAccessToken } from '../utils/tokenServices';
 import withAuthentication from '../utils/withAuthenicate';
-import { useNavigate } from 'react-router-dom';
+import { apiService } from '../apiService/Services.js';
+import constant from '../utils/constant.js';
+import { handleInputChange, handleModalClose } from '../utils/commonFunction.js';
+import ErrorModal from '../components/ErrorModal.jsx';
 
 const ChatSidebar = () => {
-    const [users, setUsers] = useState({
+    const [status, setStatus] = useState({
         profiles: [],
         totalPages: 0,
         page: 1,
-        isLoading: false,
+        loading: false,
         errorMessage: '',
         showErrorModal: false,
         searchParams: { query: '' },
@@ -21,78 +22,54 @@ const ChatSidebar = () => {
     });
     const [selectedChatUser, setSelectedChatUser] = useState(null);
 
-    const accesstoken = localStorage.getItem('accesstoken');
-    const refreshtoken = localStorage.getItem('refreshtoken');
-    const userId = localStorage.getItem('id');
-    const defaultProfilePicture = 'https://imgv3.fotor.com/images/blog-cover-image/10-profile-picture-ideas-to-make-you-stand-out.jpg';
-    const navigate = useNavigate();
+    const accesstoken = localStorage.getItem(constant.localStorageKeys.accessToken);
+    const userId = localStorage.getItem(constant.localStorageKeys.userId);
+    const defaultProfilePicture = constant.imageLink.profileIcon;
     const mainContentRef = useRef(null);
-
-    const handleFetchError = useCallback((data, response) => {
-        if (response.status === 401 || data.unauthorized) {
-            return refreshAccessToken(refreshtoken, userId, navigate);
-        } else if (data.message) {
-            setUsers((prev) => ({ ...prev, errorMessage: data.message, showErrorModal: true }));
-        }
-    }, [userId, navigate, refreshtoken]);
 
     const handleChatOpen = (user) => {
         setSelectedChatUser(user);
-        localStorage.setItem('selectedChatUserId', user._id);
+        constant.localStorageUtils.setItem(constant.localStorageKeys.selectedChatUserId, user._id);
     };
 
     const fetchProfiles = useCallback(async () => {
-        setUsers((prevState) => ({ ...prevState, isLoading: true, showErrorModal: false }));
+        setStatus((prevState) => ({ ...prevState, loading: true, showErrorModal: false }));
 
-        const { query } = users.searchParams;
-        try {
-            const queryParams = { allUser: true };
+        const { query } = status.searchParams;
 
-            const url = `${backendURL}/user?${new URLSearchParams({
-                ...queryParams,
-                limit: 20,
-                page: users.page,
-                searchKey: query,
-            })}`;
-
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    accesstoken,
-                    id: userId,
-                },
-            });
-
-            const data = await response.json();
-
-            if (response.ok && data.data) {
-                const updatedProfiles = data.data.map(profile => ({
-                    ...profile,
-                    profileImage: profile.profileImage || defaultProfilePicture,
-                }));
-
-                const uniqueProfiles = Array.from(new Map(updatedProfiles.map(profile => [profile._id, profile])).values());
-
-                setUsers(prevData => ({
-                    ...prevData,
-                    profiles: prevData.page === 1 ? uniqueProfiles : [...prevData.profiles, ...uniqueProfiles],
-                    totalPages: Math.ceil(data.total / 20),
-                    notFound: uniqueProfiles.length === 0,
-                }));
-            } else {
-                handleFetchError(data, response);
-            }
-        } catch (error) {
-            setUsers((prev) => ({
-                ...prev,
-                errorMessage: 'Something went wrong while fetching profiles.',
-                showErrorModal: true,
-            }));
-        } finally {
-            setUsers((prev) => ({ ...prev, isLoading: false }));
+        const payload = {
+            pathMap: { allUser: true },
+            accesstoken,
+            userId,
+            page: status.page,
+            searchKey: query
         }
-    }, [users.page, users.searchParams, accesstoken, userId, handleFetchError]);
+
+        const result = await apiService(payload, constant.apiLabel.userProfile);
+        if (result.success) {
+            const updatedProfiles = result.data.data.map(profile => ({
+                ...profile,
+                profileImage: defaultProfilePicture,
+            }));
+
+            const uniqueProfiles = Array.from(new Map(updatedProfiles.map(profile => [profile._id, profile])).values());
+
+            setStatus(prevData => ({
+                ...prevData,
+                profiles: uniqueProfiles,
+                totalPages: Math.ceil(result.data.total / 20),
+                notFound: uniqueProfiles.length === 0,
+            }));
+        } else {
+            setStatus((prev) => ({
+                ...prev,
+                errorMessage: result.message,
+                showErrorModal: true,
+                loading: false
+            }));
+        }
+        setStatus((prevState) => ({ ...prevState, loading: false }));
+    }, [status.page, status.searchParams, accesstoken, userId, defaultProfilePicture]);
 
     useEffect(() => {
         fetchProfiles();
@@ -101,11 +78,11 @@ const ChatSidebar = () => {
     const handleScroll = useCallback(() => {
         if (mainContentRef.current) {
             const bottom = mainContentRef.current.scrollHeight - mainContentRef.current.scrollTop <= mainContentRef.current.clientHeight + 1;
-            if (bottom && !users.isLoading && users.page < users.totalPages) {
-                setUsers((prev) => ({ ...prev, page: prev.page + 1 }));
+            if (bottom && !status.loading && status.page < status.totalPages) {
+                setStatus((prev) => ({ ...prev, page: prev.page + 1 }));
             }
         }
-    }, [users.isLoading, users.page, users.totalPages]);
+    }, [status.loading, status.page, status.totalPages]);
 
     useEffect(() => {
         const contentRef = mainContentRef.current;
@@ -119,48 +96,44 @@ const ChatSidebar = () => {
         };
     }, [handleScroll]);
 
-    const handleSearchChange = (e) => {
-        const { value } = e.target;
-        setUsers((prevState) => ({
-            ...prevState,
-            searchParams: { ...prevState.searchParams, query: value },
-            page: 1,
-            profiles: [],
-        }));
-    };
+    const handleSearchChange = useCallback((e) => {
+        handleInputChange(e, setStatus);
+    }, []);
+
+    const handleErrorModalClose = () => handleModalClose(setStatus);
 
     useEffect(() => {
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow = constant.label.hidden;
 
-        const storedChatUserId = localStorage.getItem('selectedChatUserId');
+        const storedChatUserId = localStorage.getItem(constant.localStorageKeys.selectedChatUserId);
         if (storedChatUserId) {
-            const storedChatUser = users.profiles.find(user => user._id === storedChatUserId);
+            const storedChatUser = status.profiles.find(user => user._id === storedChatUserId);
             if (storedChatUser) {
                 setSelectedChatUser(storedChatUser);
             }
         }
 
         return () => {
-            document.body.style.overflow = 'auto';
+            document.body.style.overflow = constant.label.auto;
         };
-    }, [users.profiles]);
+    }, [status.profiles]);
 
     return (
         <div className={styles.chatContainer}>
             <aside className={`${styles.sidebar} ${styles.scrollContainer}`} ref={mainContentRef}>
                 <SearchFilterBar
-                    searchParams={users.searchParams}
+                    searchParams={status.searchParams}
                     handleSearchChange={handleSearchChange}
-                    placeholder='Search Users...'
+                    placeholder={constant.searchLabel.user}
                 />
                 <nav>
                     <ul>
-                        {users.isLoading ? (
+                        {status.loading ? (
                             <Loader />
-                        ) : users.notFound ? (
-                            <p className={styles.noDataMessage}>No profiles found</p>
-                        ) : users.profiles && users.profiles.length > 0 ? (
-                            users.profiles.map((user) => (
+                        ) : status.notFound ? (
+                            <p className={styles.noDataMessage}>{constant.label.noProfileFound}</p>
+                        ) : status.profiles && status.profiles.length > 0 ? (
+                            status.profiles.map((user) => (
                                 <li key={user._id} className={styles.userListItem}>
                                     <div className={styles.userInfo}>
                                         <img
@@ -179,20 +152,22 @@ const ChatSidebar = () => {
                                         >
                                             <img
                                                 loading='lazy'
-                                                src={'https://cdn.builder.io/api/v1/image/assets/TEMP/f8aa5864f4496088c34969bd03fb7653ad0f1755b36b6d1430a30d71f97c216b?placeholderIfAbsent=true&apiKey=2ac8b4a54abb47edaafca4375aaa23ca'}
+                                                src={constant.imageLink.chatIcon}
                                                 className={styles.icon}
-                                                alt='Chat icon'
+                                                alt={constant.imageAlt.chaticons}
                                             />
                                         </button>
                                     </div>
                                 </li>
                             ))
                         ) : (
-                            <p className={styles.noDataMessage}>No profiles found</p>
+                            <p className={styles.noDataMessage}>{constant.label.noProfileFound}</p>
                         )}
                     </ul>
                 </nav>
             </aside>
+
+            {status.showErrorModal && <ErrorModal message={status.errorMessage} onClose={handleErrorModalClose} />}
 
             {selectedChatUser && (
                 <div className={styles.chatWindow}>

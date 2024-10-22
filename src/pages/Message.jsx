@@ -1,52 +1,51 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styles from '../styles/Message.module.css';
 import Loader from '../components/Loader';
-import { backendURL } from '../api/url';
-import { refreshAccessToken } from '../utils/tokenServices';
-import { useNavigate } from 'react-router-dom';
+import io from 'socket.io-client';
+import constant from '../utils/constant';
+import { apiService } from '../apiService/Services.js';
 
 const Message = ({ sender, receiver, receiverName }) => {
     const [messages, setMessages] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const accesstoken = localStorage.getItem('accesstoken');
-    const refreshtoken = localStorage.getItem('refreshtoken');
-    const userId = localStorage.getItem('id');
-    const navigate = useNavigate();
+    const accesstoken = localStorage.getItem(constant.localStorageKeys.accessToken);
+    const userId = localStorage.getItem(constant.localStorageKeys.userId);
 
-    const handleFetchError = useCallback((data, response) => {
-        if (response.status === 401 || data.unauthorized) {
-            return refreshAccessToken(refreshtoken, userId, navigate);
-        } else if (data.message) {
-            setErrorMessage(data.message);
-        }
-    }, [userId, navigate, refreshtoken]);
+    useEffect(() => {
+        const socket = io(process.env.REACT_APP_SOCKET_IO_CONNECTION_URL);
+
+        socket.on(constant.label.connect, () => {
+            if (userId) {
+                socket.emit(constant.label.join, userId);
+            }
+        });
+
+        socket.on(constant.apiLabel.message, (newMessage) => {
+            if (newMessage && (newMessage.receiver === receiver || newMessage.sender === receiver)) {
+                setMessages((prevMessages) => [...prevMessages, newMessage]);
+            }
+        });
+
+        return () => {
+            socket.off(constant.apiLabel.message);
+        };
+    }, [receiver, userId]);
 
     const fetchMessages = useCallback(async () => {
         setIsLoading(true);
         setErrorMessage('');
-        try {
-            const response = await fetch(`${backendURL}/chat/${sender}/${receiver}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    accesstoken,
-                    id: userId,
-                },
-            });
+        const payload = { sender, receiver, accesstoken, userId }
+        
+        const result = await apiService(payload, constant.apiLabel.getChat)
 
-            const data = await response.json();
-            if (response.ok) {
-                setMessages(Array.isArray(data.data) ? data.data : []);
-            } else {
-                handleFetchError(data, response);
-            }
-        } catch (error) {
-            setErrorMessage('Something went wrong while fetching messages.');
-        } finally {
-            setIsLoading(false);
+        if (result.success) {
+            setMessages(Array.isArray(result.data.data) ? result.data.data : []);
+        } else {
+            setErrorMessage(result.message);
         }
-    }, [sender, receiver, accesstoken, userId, handleFetchError]);
+        setIsLoading(false);
+    }, [sender, receiver, accesstoken, userId]);
 
     useEffect(() => {
         fetchMessages();
@@ -58,32 +57,15 @@ const Message = ({ sender, receiver, receiverName }) => {
             content: messageContent,
             createdAt: currentTime,
             sender: userId,
+            receiver: receiver,
+            accesstoken,
+            userId
         };
 
         setMessages((prevMessages) => [...prevMessages, newMessage]);
 
-        try {
-            const response = await fetch(`${backendURL}/send`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    accesstoken,
-                    id: userId,
-                },
-                body: JSON.stringify({
-                    sender: userId,
-                    receiver: receiver,
-                    content: messageContent,
-                    createdAt: currentTime,
-                }),
-            });
-
-            const data = await response.json();
-            if (!response.ok) {
-                handleFetchError(data, response);
-            }
-        } catch (error) {
-            setErrorMessage('Failed to send the message.');
+        const result = await apiService(newMessage, constant.apiLabel.message);
+        if (!result.success) {
             setMessages((prevMessages) => prevMessages.filter(msg => msg.createdAt !== currentTime));
         }
     };
@@ -104,18 +86,18 @@ const Message = ({ sender, receiver, receiverName }) => {
                 <div className={styles.inputWrapper}>
                     <div className={styles.inputField}>
                         <input
-                            type='text'
-                            id='messageInput'
+                            type={constant.inputLabel.messageInput.type}
+                            id={constant.inputLabel.messageInput.id}
                             className={styles.textInput}
-                            placeholder='Type a message'
-                            aria-label='Type a message'
+                            placeholder={constant.inputLabel.messageInput.placeHolder}
+                            aria-label={constant.inputLabel.messageInput.placeHolder}
                             value={messageText}
                             onChange={(e) => setMessageText(e.target.value)}
                         />
                         <div className={styles.buttonWrapper}>
                             <div className={styles.buttonContainer}>
-                                <button type='submit' className={styles.sendButton}>
-                                    <span className={styles.sendButtonText}>Send</span>
+                                <button type={constant.buttonType.submit} className={styles.sendButton}>
+                                    <span className={styles.sendButtonText}>{constant.label.send}</span>
                                 </button>
                             </div>
                         </div>
@@ -128,8 +110,8 @@ const Message = ({ sender, receiver, receiverName }) => {
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return !isNaN(date.getTime())
-            ? date.toLocaleString(undefined, { hour: '2-digit', minute: '2-digit' })
-            : 'Invalid date';
+            ? date.toLocaleString(undefined, { hour: constant.label.digit, minute: constant.label.digit })
+            : constant.validationMessage.invalidDate;
     };
 
     return (

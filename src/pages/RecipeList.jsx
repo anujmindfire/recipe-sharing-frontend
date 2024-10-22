@@ -1,20 +1,20 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styles from '../styles/RecipePage.module.css';
 import RecipeCard from '../components/RecipeCard';
 import SearchFilterBar from '../components/SearchFilterBar';
 import withAuthentication from '../utils/withAuthenicate';
-import { backendURL } from '../api/url';
 import Loader from '../components/Loader';
 import ErrorModal from '../components/ErrorModal';
-import { refreshAccessToken } from '../utils/tokenServices';
+import { apiService } from '../apiService/Services.js';
+import constant from '../utils/constant.js';
+import { sortTimes, handleModalClose, handleInputChange } from '../utils/commonFunction.js';
 
 const RecipeList = () => {
     const [status, setStatus] = useState({
         recipes: [],
         totalPages: 0,
         page: 1,
-        isLoading: false,
+        loading: false,
         allUniquePrepTimes: [],
         allUniqueCookTimes: [],
         errorMessage: '',
@@ -28,65 +28,45 @@ const RecipeList = () => {
         notFound: false,
     });
 
-    const navigate = useNavigate();
-    const { recipes, totalPages, page, isLoading, allUniquePrepTimes, allUniqueCookTimes, errorMessage, showErrorModal, searchParams, notFound } = status;
+    const { recipes, totalPages, page, loading, allUniquePrepTimes, allUniqueCookTimes, errorMessage, showErrorModal, searchParams, notFound } = status;
 
-    const accesstoken = localStorage.getItem('accesstoken');
-    const refreshtoken = localStorage.getItem('refreshtoken');
-    const userId = localStorage.getItem('id');
-
-    const parseTimeString = (timeString) => {
-        const [value, unit] = timeString.split(' ');
-        return unit.includes('hour') ? parseInt(value) * 60 : parseInt(value);
-    };
-
-    const sortTimes = useCallback((times) => {
-        return times.sort((a, b) => parseTimeString(a) - parseTimeString(b));
-    }, []);
+    const accesstoken = localStorage.getItem(constant.localStorageKeys.accessToken);
+    const userId = localStorage.getItem(constant.localStorageKeys.userId);
 
     const fetchRecipes = useCallback(async () => {
-        setStatus((prevState) => ({ ...prevState, isLoading: true, showErrorModal: false }));
-        const { query, rating, prepTime, cookTime } = searchParams;
+        setStatus((prevState) => ({ ...prevState, loading: true, showErrorModal: false }));
     
-        try {
-            const response = await fetch(`${backendURL}/recipe?page=${page}${query ? '' : '&limit=20'}&searchKey=${query}&ratingValue=${rating}&preparationTime=${prepTime}&cookingTime=${cookTime}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    accesstoken,
-                    id: userId,
-                },
-            });
+        const payload = {
+            page,
+            query: searchParams.query,
+            rating: searchParams.rating,
+            prepTime: searchParams.prepTime,
+            cookTime: searchParams.cookTime,
+            accesstoken,
+            userId
+        };
     
-            const data = await response.json();
-            if (response.ok) {
-                setStatus((prevState) => ({
-                    ...prevState,
-                    recipes: page === 1 ? data.data : [...prevState.recipes, ...data.data],
-                    totalPages: Math.ceil(data.total / 20),
-                    allUniquePrepTimes: sortTimes(data.uniquePreparationTimes),
-                    allUniqueCookTimes: sortTimes(data.uniqueCookingTimes),
-                    notFound: data.data.length === 0,
-                }));
-            } else if (response.status === 401 || data.unauthorized) {
-                await refreshAccessToken(refreshtoken, userId, navigate);
-            } else {
-                setStatus((prevState) => ({
-                    ...prevState,
-                    errorMessage: data.message,
-                    showErrorModal: true,
-                }));
-            }
-        } catch (error) {
+        const result = await apiService(payload, constant.apiLabel.recipelist);
+    
+        if (result.success) {
             setStatus((prevState) => ({
                 ...prevState,
-                errorMessage: 'An error occurred while fetching recipes.',
+                recipes: page === 1 ? result.data.data : [...prevState.recipes, ...result.data.data],
+                totalPages: Math.ceil(result.data.total / 20),
+                allUniquePrepTimes: sortTimes(result.data.uniquePreparationTimes),
+                allUniqueCookTimes: sortTimes(result.data.uniqueCookingTimes),
+                notFound: result.data.data.length === 0,
+            }));
+        } else {
+            setStatus((prevState) => ({
+                ...prevState,
+                errorMessage: result.message,
                 showErrorModal: true,
             }));
-        } finally {
-            setStatus((prevState) => ({ ...prevState, isLoading: false }));
         }
-    }, [accesstoken, userId, page, searchParams, refreshtoken, navigate, sortTimes]);    
+        setStatus((prevState) => ({ ...prevState, loading: false }));
+        
+    }, [page, searchParams, accesstoken, userId]);
 
     useEffect(() => {
         fetchRecipes();
@@ -95,32 +75,19 @@ const RecipeList = () => {
     useEffect(() => {
         const handleScroll = () => {
             const bottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 1;
-            if (bottom && !isLoading && page < totalPages) {
+            if (bottom && !loading && page < totalPages) {
                 setStatus((prevState) => ({ ...prevState, page: prevState.page + 1 }));
             }
         };
 
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, [isLoading, page, totalPages]);
+    }, [loading, page, totalPages]);
 
-    const handleErrorModalClose = () => {
-        setStatus((prevState) => ({
-            ...prevState,
-            showErrorModal: false,
-            errorMessage: '',
-        }));
-    };
-
-    const handleSearchChange = (e) => {
-        const { name, value } = e.target;
-        setStatus((prevState) => ({
-            ...prevState,
-            searchParams: { ...prevState.searchParams, [name]: value },
-            page: 1,
-            recipes: [],
-        }));
-    };
+    const handleErrorModalClose = () => handleModalClose(setStatus);
+    const handleSearchChange = useCallback((e) => {
+        handleInputChange(e, setStatus);
+    }, []);
 
     return (
         <div className={styles.recipeApp}>
@@ -130,10 +97,10 @@ const RecipeList = () => {
                     handleSearchChange={handleSearchChange}
                     uniquePrepTimes={allUniquePrepTimes}
                     uniqueCookTimes={allUniqueCookTimes}
-                    placeholder='Search Recipes...'
+                    placeholder={constant.searchLabel.recipe}
                 />
-                {isLoading && !notFound && <Loader />}
-                {notFound && <p className={styles.noDataMessage}>No recipes found</p>}
+                {loading && !notFound && <Loader />}
+                {notFound && <p className={styles.noDataMessage}>{constant.label.noRecipeFound}</p>}
                 <RecipeCard recipes={recipes} />
                 {showErrorModal && <ErrorModal message={errorMessage} onClose={handleErrorModalClose} />}
             </main>

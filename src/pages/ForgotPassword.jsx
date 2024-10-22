@@ -1,122 +1,101 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import DOMPurify from 'dompurify';
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import styles from '../styles/Form.module.css';
-import InputField from '../components/Input';
+import Input from '../components/Input';
 import Button from '../components/Button';
 import Snackbar from '../components/Snackbar';
 import Validation from '../components/Validation';
-import { backendURL } from '../api/url';
+import { validateField, createHandleChange } from '../validation/validation.js';
+import { apiService } from '../apiService/Services.js';
+import constant from '../utils/constant.js';
+import { useClearLocalStorageAndRedirect } from '../utils/commonFunction.js';
+
+const initialState = {
+    email: '',
+    errors: { email: '' },
+    loading: false,
+    errorMessage: '',
+    showSnackbar: false,
+    successMessage: ''
+};
 
 const ForgotPassword = () => {
-    const [formData, setFormData] = useState({ email: '' });
-    const [status, setStatus] = useState({
-        showSnackbar: false,
-        successMessage: '',
-        loading: false,
-        errorMessage: ''
-    });
+    const [formData, setFormData] = useState(initialState);
     const navigate = useNavigate();
+    const handleChange = createHandleChange(setFormData);
 
-    const validateEmail = useCallback(email => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email), []);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: DOMPurify.sanitize(value)
-        }));
-        setStatus(prev => ({ ...prev, errorMessage: '' }));
-    };
-
-    const handleSubmit = async (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
-        setStatus(prev => ({ ...prev, loading: true, errorMessage: '' }));
 
-        if (!formData.email.trim()) {
-            return setStatus(prev => ({ ...prev, loading: false, errorMessage: 'Email is required.' }));
+        const errors = {
+            email: validateField(constant.inputLabel.email.type, formData.email),
+        };
+
+        if (Object.values(errors).some(error => error)) {
+            setFormData(prev => ({ ...prev, errors, errorMessage: '' }));
+            return;
         }
 
-        if (!validateEmail(formData.email)) {
-            return setStatus(prev => ({ ...prev, loading: false, errorMessage: 'Please enter a valid email address.' }));
-        }
+        const payload = { email: formData.email }
 
-        try {
-            const response = await fetch(`${backendURL}/password/sendEmail`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
-            });
+        setFormData(prev => ({ ...prev, loading: true, errorMessage: '' }));
 
-            const data = await response.json();
-            const successMessage = response.ok ? data.message : data.message;
+        const result = await apiService(payload, constant.apiLabel.forgotPassword);
 
-            setStatus(prev => ({
+        if (result.success) {
+            setFormData(prev => ({
                 ...prev,
-                loading: false,
-                errorMessage: response.ok ? '' : successMessage,
-                showSnackbar: response.ok,
-                successMessage: response.ok ? successMessage : ''
+                showSnackbar: true,
+                successMessage: result.data.message
             }));
-
-            if (response.ok) {
-                localStorage.setItem('txnId', data.data.txnId);
-                localStorage.setItem('email', true);
-                setTimeout(() => navigate('/signin'), 2000);
-            }
-        } catch {
-            setStatus(prev => ({
-                ...prev,
-                loading: false,
-                errorMessage: 'Unable to connect to the server. Please check your internet connection.'
-            }));
+            constant.localStorageUtils.setItem(constant.localStorageKeys.txnId, result.data.data.txnId);
+            constant.localStorageUtils.setItem(constant.localStorageKeys.email, true);
+            setTimeout(() => navigate(constant.routes.signIn), 2000);
+        } else {
+            setFormData(prev => ({ ...prev, loading: false, errorMessage: result.message }));
         }
     };
 
-    useEffect(() => {
-        if (localStorage.getItem('accesstoken') && localStorage.getItem('refreshtoken')) {
-            navigate('/recipes');
-        }
-    }, [navigate]);
-
-    useEffect(() => {
-        localStorage.removeItem('email');
-        localStorage.removeItem('txnId');
-    }, []);
+    useClearLocalStorageAndRedirect(constant.routes.recipes);
 
     return (
         <main className={styles.container}>
             <section className={styles.formWrapper}>
                 <div className={styles.card}>
-                    <form className={styles.formFields} onSubmit={handleSubmit} noValidate>
-                        <h2 className={styles.formTitle}>Reset your password</h2>
+                    <form className={styles.formFields} onSubmit={onSubmit} noValidate>
+                        <h2 className={styles.formTitle}>{constant.label.resetPassword}</h2>
 
-                        <InputField
-                            label='Email'
-                            name='email'
-                            type='email'
+                        <Input
+                            id={constant.inputLabel.email.type}
+                            type={constant.inputLabel.email.type}
+                            label={constant.inputLabel.email.label}
+                            name={constant.inputLabel.email.type}
                             value={formData.email}
                             onChange={handleChange}
-                            disabled={status.loading}
+                            disabled={formData.loading}
                         />
+                        <Validation error={formData.errors.email} show={!!formData.errors.email} />
 
-                        <Validation error={status.errorMessage} show={!!status.errorMessage} />
-
-                        <p className={styles.prompt}>
-                            Remembered your password? <a href='/signin' className={styles.signInLink}>Sign in</a>
-                        </p>
-
-                        <Button type='submit' loading={status.loading} disabled={status.loading}> 
-                            {status.loading ? 'Sending...' : 'Send Reset Link'}
+                        <Button type={constant.buttonType.submit} loading={formData.loading} disabled={formData.loading}>
+                            {constant.label.sendLink}
                         </Button>
+
+                        <Validation error={formData.errorMessage} show={!!formData.errorMessage} />
+
+                        <p className={styles.signInText}>
+                            {constant.label.rememberPassword}{' '}
+                            <Link to={constant.routes.signIn} className={styles.signInLink}>
+                                {constant.label.signIn}
+                            </Link>
+                        </p>
                     </form>
                 </div>
             </section>
 
             <Snackbar
-                message={status.successMessage}
-                isVisible={status.showSnackbar}
-                onClose={() => setStatus(prev => ({ ...prev, showSnackbar: false }))}
+                message={formData.successMessage}
+                isVisible={formData.showSnackbar}
+                onClose={() => setFormData(prev => ({ ...prev, showSnackbar: false }))}
             />
         </main>
     );

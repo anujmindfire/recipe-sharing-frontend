@@ -2,12 +2,13 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import styles from '../styles/Notification.module.css';
+import constant from '../utils/constant';
 
 const Notification = ({ isOpen, onClose, initialNotifications = [], onDeleteNotification }) => {
     return (
         <div className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
             <div className={styles.sidebarHeader}>
-                <h2>Notifications</h2>
+                <h2>{constant.label.notification}</h2>
                 <button className={styles.closeButton} onClick={onClose}>
                     &times;
                 </button>
@@ -23,14 +24,14 @@ const Notification = ({ isOpen, onClose, initialNotifications = [], onDeleteNoti
                             <button 
                                 className={styles.deleteButton}
                                 onClick={() => onDeleteNotification(index)}
-                                aria-label='Delete Notification'
+                                aria-label={constant.label.deleteNoti}
                             >
                                 <FontAwesomeIcon icon={faTrash} />
                             </button>
                         </div>
                     ))
                 ) : (
-                    <p className={styles.noNotifications}>No notifications available.</p>
+                    <p className={styles.noNotifications}>{constant.label.noAvailNoti}</p>
                 )}
             </div>
         </div>

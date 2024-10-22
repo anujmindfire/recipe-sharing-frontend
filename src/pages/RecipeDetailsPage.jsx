@@ -1,144 +1,127 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from '../styles/RecipePage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as heartRegular, faHeart as heartSolid, faShareNodes as solidShare, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { backendURL } from '../api/url';
 import Button from '../components/Button';
 import Validation from '../components/Validation';
 import Loader from '../components/Loader';
 import ShareModal from '../components/ShareModal';
+import ErrorModal from '../components/ErrorModal';
 import withAuthentication from '../utils/withAuthenicate';
-import { refreshAccessToken } from '../utils/tokenServices';
+import { apiService } from '../apiService/Services.js';
+import constant from '../utils/constant.js';
+import { handleModalClose } from '../utils/commonFunction.js';
 
 const RecipeDetailsPage = () => {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const [state, setState] = useState({
+    const [status, setStatus] = useState({
         recipe: null,
         feedbackRating: 0,
         feedbackComment: '',
         isLiked: false,
-        isLoading: true,
-        errorMessage: null,
+        loading: true,
+        errorMessage: '',
         notFound: false,
         shareModalOpen: false,
+        showErrorModal: false
     });
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const accesstoken = localStorage.getItem(constant.localStorageKeys.accessToken);
+    const userId = localStorage.getItem(constant.localStorageKeys.userId);
 
-    const accesstoken = localStorage.getItem('accesstoken');
-    const refreshtoken = localStorage.getItem('refreshtoken');
-    const userId = localStorage.getItem('id');
+    const fetchRecipeDetails = useCallback(async () => {
+        setStatus((prev) => ({ ...prev, loading: true, showErrorModal: false, notFound: false }));
+
+        const payload = { id, accesstoken, userId };
+
+        const result = await apiService(payload, constant.apiLabel.oneRecipe);
+
+        if (result.success) {
+            setStatus((prev) => ({
+                ...prev,
+                recipe: result.data.data,
+                isLiked: result.data.data.isSaved,
+                loading: false
+            }));
+        } else {
+            setStatus((prev) => ({
+                ...prev,
+                notFound: true,
+                errorMessage: result.message,
+                showErrorModal: true,
+                loading: false
+            }));
+        }
+        setStatus((prevState) => ({ ...prevState, loading: false }));
+    }, [id, accesstoken, userId]);
 
     useEffect(() => {
-        const fetchRecipeDetails = async () => {
-            setState((prev) => ({ ...prev, isLoading: true }));
-
-            try {
-                const response = await fetch(`${backendURL}/recipe?_id=${id}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        accesstoken,
-                        id: userId,
-                    },
-                });
-
-                const data = await response.json();
-                if (response.ok) {
-                    setState((prev) => ({
-                        ...prev,
-                        recipe: data.data,
-                        isLiked: data.data.isSaved,
-                        isLoading: false
-                    }));
-                } else if (response.status === 401 || data.unauthorized) {
-                    await refreshAccessToken(refreshtoken, userId, navigate);
-                } else {
-                    setState((prev) => ({
-                        ...prev,
-                        notFound: true,
-                        errorMessage: data.message,
-                        isLoading: false
-                    }));
-                }
-            } catch (error) {
-                setState((prev) => ({
-                    ...prev,
-                    errorMessage: 'Unable to connect to the server. Please check your internet connection.',
-                    isLoading: false
-                }));
-            }
-        };
-
         fetchRecipeDetails();
-    }, [id, accesstoken, refreshtoken, userId, navigate]);
+    }, [fetchRecipeDetails]);
 
     const handleFeedbackSubmit = async (e) => {
         e.preventDefault();
-        setState((prev) => ({ ...prev, errorMessage: null }));
 
-        if (state.feedbackRating === 0 || state.feedbackComment.trim() === '') {
-            setState((prev) => ({ ...prev, errorMessage: 'Please provide both a rating and a comment.' }));
+        setStatus((prev) => ({ ...prev, errorMessage: '' }));
+
+        if (status.feedbackRating === 0 || status.feedbackComment.trim() === '') {
+            setStatus((prev) => ({ ...prev, errorMessage: constant.validationMessage.invalidFeedback }));
             return;
         }
 
-        try {
-            const response = await fetch(`${backendURL}/recipefeedback`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    accesstoken,
-                    id: userId,
-                },
-                body: JSON.stringify({ recipeId: id, ratingValue: state.feedbackRating, commentText: state.feedbackComment }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                window.location.reload();
-            } else if (data.message) {
-                setState((prev) => ({ ...prev, errorMessage: data.message }));
-            }
-        } catch {
-            setState((prev) => ({ ...prev, errorMessage: 'Something went wrong while submitting feedback.' }));
+        const payload = {
+            recipeId: id,
+            ratingValue: status.feedbackRating,
+            commentText: status.feedbackComment,
+            accesstoken, 
+            userId
         }
+
+        setStatus(prev => ({ ...prev, loading: true, errorMessage: '' }));
+
+        const result = await apiService(payload, constant.apiLabel.addRating);
+        if (result.success) {
+            window.location.reload();
+        } else {
+            setStatus((prev) => ({ ...prev, errorMessage: result.message }));
+        }
+        setStatus(prev => ({ ...prev, loading: false }));
     };
 
     const handleShareRecipe = () => {
-        setState((prev) => ({ ...prev, shareModalOpen: true }));
+        setStatus((prev) => ({ ...prev, shareModalOpen: true }));
     };
 
     const toggleLike = async () => {
-        setState((prev) => ({ ...prev, isLoading: true }));
-        try {
-            const response = await fetch(`${backendURL}/user?recipeId=${id}&add=${!state.isLiked}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    accesstoken,
-                    id: userId,
-                },
-            });
 
-            const data = await response.json();
+        setStatus((prev) => ({ ...prev, loading: true }));
 
-            if (response.ok) {
-                setState((prev) => ({ ...prev, isLiked: !prev.isLiked }));
-            } else {
-                setState((prev) => ({ ...prev, errorMessage: data.message }));
-            }
-        } catch {
-            setState((prev) => ({ ...prev, errorMessage: 'Something went wrong while processing your request.' }));
-        } finally {
-            setState((prev) => ({ ...prev, isLoading: false }));
+        const payload = {
+            recipeId: id,
+            add: !status.isLiked,
+            accesstoken,
+            userId
         }
+
+        const result = await apiService(payload, constant.apiLabel.savedRecipe);
+
+        if (result.success) {
+            setStatus((prev) => ({ ...prev, isLiked: !prev.isLiked }));
+        } else {
+            setStatus((prev) => ({ ...prev, errorMessage: result.message }));
+        }
+        setStatus(prev => ({ ...prev, loading: false }));
     };
+
+    const handleErrorModalClose = () => handleModalClose(setStatus);
 
     return (
         <main className={styles.recipeReview}>
-            {state.isLoading && !state.notFound && <Loader />}
-            {state.recipe && !state.isLoading && (
+            {status.loading && !status.notFound && <Loader />}
+            {status.notFound && <p className={styles.noDataMessage}>{constant.label.noRecipeFound}</p>}
+            {status.showErrorModal && <ErrorModal message={status.errorMessage} onClose={handleErrorModalClose} />}
+            {status.recipe && !status.loading && (
                 <>
                     <article className={styles.recipeContent}>
                         <section className={styles.recipeHeader}>
@@ -148,16 +131,16 @@ const RecipeDetailsPage = () => {
                                 className={styles.arrowLeft}
                             />
                             <figure className={styles.recipeImageContainer}>
-                                <img src={state.recipe?.recipe?.imageUrl} alt={state.recipe?.recipe?.title} className={styles.recipeFullImage} />
+                                <img src={status.recipe?.recipe?.imageUrl} alt={status.recipe?.recipe?.title} className={styles.recipeFullImage} />
                             </figure>
                             <div className={styles.titleContainer}>
                                 <h2 className={styles.recipeTitle}>
-                                    {state.recipe?.recipe?.title}
+                                    {status.recipe?.recipe?.title}
                                 </h2>
                                 <div className={styles.iconContainer}>
                                     <FontAwesomeIcon
-                                        icon={state.isLiked ? heartSolid : heartRegular}
-                                        className={`${styles.heartIcon} ${state.isLiked ? styles.liked : ''}`}
+                                        icon={status.isLiked ? heartSolid : heartRegular}
+                                        className={`${styles.heartIcon} ${status.isLiked ? styles.liked : ''}`}
                                         onClick={toggleLike}
                                     />
                                     <FontAwesomeIcon
@@ -167,23 +150,23 @@ const RecipeDetailsPage = () => {
                                     />
                                 </div>
                             </div>
-                            <p className={styles.recipeDescription}>{state.recipe?.recipe?.description}</p>
+                            <p className={styles.recipeDescription}>{status.recipe?.recipe?.description}</p>
                             <div className={styles.recipeMetaInfo}>
                                 <div className={styles.metaItem}>
-                                    <h3 className={styles.metaTitle}>Preparation Time</h3>
-                                    <p className={styles.metaValue}>{state.recipe?.recipe?.preparationTime}</p>
+                                    <h3 className={styles.metaTitle}>{constant.label.prepationTime}</h3>
+                                    <p className={styles.metaValue}>{status.recipe?.recipe?.preparationTime}</p>
                                 </div>
                                 <div className={styles.metaItem}>
-                                    <h3 className={styles.metaTitle}>Cooking Time</h3>
-                                    <p className={styles.metaValue}>{state.recipe?.recipe?.cookingTime}</p>
+                                    <h3 className={styles.metaTitle}>{constant.label.cookingTime}</h3>
+                                    <p className={styles.metaValue}>{status.recipe?.recipe?.cookingTime}</p>
                                 </div>
                             </div>
                         </section>
 
                         <section className={styles.recipeIngredients}>
-                            <h3 className={styles.ingredientsTitle}>Ingredients</h3>
+                            <h3 className={styles.ingredientsTitle}>{constant.label.ingredients}</h3>
                             <ul className={styles.ingredientsList}>
-                                {state.recipe?.recipe?.ingredients.map((ingredient, index) => (
+                                {status.recipe?.recipe?.ingredients.map((ingredient, index) => (
                                     <li key={index}>{ingredient}</li>
                                 ))}
                             </ul>
@@ -191,10 +174,10 @@ const RecipeDetailsPage = () => {
 
 
                         <section className={styles.recipeSteps}>
-                            <h3 className={styles.stepsTitle}>Steps</h3>
-                            {state.recipe?.recipe?.steps.map((step, index) => (
+                            <h3 className={styles.stepsTitle}>{constant.label.steps}</h3>
+                            {status.recipe?.recipe?.steps.map((step, index) => (
                                 <div key={index} className={styles.stepItem}>
-                                    <h4 className={styles.stepTitle}>Step {index + 1}</h4>
+                                    <h4 className={styles.stepTitle}>{constant.label.step}{index + 1}</h4>
                                     <p className={styles.stepDescription}>{step}</p>
                                 </div>
                             ))}
@@ -202,15 +185,15 @@ const RecipeDetailsPage = () => {
 
                         <section className={styles.ratingOverview}>
                             <div className={styles.overallRating}>
-                                <h3 className={styles.ratingScore}>{state.recipe.averageRating}</h3>
+                                <h3 className={styles.ratingScore}>{status.recipe.averageRating}</h3>
                                 <div className={styles.starRating}>
                                     {[...Array(5)].map((_, starIndex) => (
                                         <span key={starIndex} className={styles.starIcon}>
-                                            {starIndex < Math.round(state.recipe.averageRating) ? '★' : '☆'}
+                                            {starIndex < Math.round(status.recipe.averageRating) ? '★' : '☆'}
                                         </span>
                                     ))}
                                 </div>
-                                <p className={styles.reviewCount}>{state.recipe.totalRating} reviews</p>
+                                <p className={styles.reviewCount}>{status.recipe.totalRating}{constant.label.review}</p>
                             </div>
                             <div className={styles.ratingDistribution}>
                                 {Array.from({ length: 5 }, (_, index) => {
@@ -221,10 +204,10 @@ const RecipeDetailsPage = () => {
                                             <div className={styles.ratingBarContainer}>
                                                 <div
                                                     className={styles.ratingBarFill}
-                                                    style={{ width: `${state.recipe?.ratingPercentages[`rating${rating}`]}%` }}
+                                                    style={{ width: `${status.recipe?.ratingPercentages[`rating${rating}`]}%` }}
                                                 />
                                             </div>
-                                            <span className={styles.ratingPercentage}>{state.recipe?.ratingPercentages[`rating${rating}`]}%</span>
+                                            <span className={styles.ratingPercentage}>{status.recipe?.ratingPercentages[`rating${rating}`]}%</span>
                                         </div>
                                     );
                                 })}
@@ -233,39 +216,39 @@ const RecipeDetailsPage = () => {
 
                         {/* Feedback Form Section */}
                         <section className={styles.feedbackForm}>
-                            <h3 className={styles.feedbackTitle}>Leave a Review</h3>
+                            <h3 className={styles.feedbackTitle}>{constant.label.leaveComment}</h3>
                             <form onSubmit={handleFeedbackSubmit} className={styles.feedbackFormContainer}>
                                 <div className={styles.ratingSelection}>
                                     {[...Array(5)].map((_, starIndex) => (
                                         <span
                                             key={starIndex}
                                             className={styles.starIcon}
-                                            onClick={() => setState((prev) => ({ ...prev, feedbackRating: starIndex + 1 }))}
+                                            onClick={() => setStatus((prev) => ({ ...prev, feedbackRating: starIndex + 1 }))}
                                         >
-                                            {starIndex < state.feedbackRating ? '★' : '☆'}
+                                            {starIndex < status.feedbackRating ? '★' : '☆'}
                                         </span>
                                     ))}
                                 </div>
                                 <textarea
                                     className={styles.feedbackTextBox}
-                                    placeholder='Write your feedback here...'
-                                    value={state.feedbackComment}
-                                    onChange={(e) => setState((prev) => ({ ...prev, feedbackComment: e.target.value }))}
+                                    placeholder={constant.label.feedbackPlaceholder}
+                                    value={status.feedbackComment}
+                                    onChange={(e) => setStatus((prev) => ({ ...prev, feedbackComment: e.target.value }))}
                                 />
-                                {state.errorMessage && (
+                                {status.errorMessage && (
                                     <div className={styles.errorSpacing}>
-                                        <Validation error={state.errorMessage} show={true} />
+                                        <Validation error={status.errorMessage} show={true} />
                                     </div>
                                 )}
-                                <Button type='submit' loading={state.isLoading} disabled={state.isLoading}>Submit</Button>
+                                <Button type={constant.buttonType.submit} loading={status.loading} disabled={status.loading}>{constant.label.submit}</Button>
                             </form>
                         </section>
 
                         {/* Reviews Section */}
                         <section className={styles.reviews}>
-                            <h3 className={styles.heading}>Reviews</h3>
-                            {state.recipe?.feedbackData?.length > 0 ? (
-                                state.recipe.feedbackData.map((feedback, index) => (
+                            <h3 className={styles.heading}>{constant.label.reviews}</h3>
+                            {status.recipe?.feedbackData?.length > 0 ? (
+                                status.recipe.feedbackData.map((feedback, index) => (
                                     <article key={index} className={styles.reviewItem}>
                                         <div className={styles.reviewHeader}>
                                             <div className={styles.profileCircle}>
@@ -287,25 +270,18 @@ const RecipeDetailsPage = () => {
                                     </article>
                                 ))
                             ) : (
-                                <p className={styles.heading}>No reviews yet.</p>
+                                <p className={styles.heading}>{constant.label.noReview}</p>
                             )}
                         </section>
 
                     </article>
 
-                    {state.shareModalOpen && <ShareModal
-                        isOpen={state.shareModalOpen}
-                        onClose={() => setState((prev) => ({ ...prev, shareModalOpen: false }))}
-                        recipeTitle={state.recipe?.recipe?.title}
+                    {status.shareModalOpen && <ShareModal
+                        isOpen={status.shareModalOpen}
+                        onClose={() => setStatus((prev) => ({ ...prev, shareModalOpen: false }))}
+                        recipeTitle={status.recipe?.recipe?.title}
                         recipeLink={window.location.href}
                     />}
-
-                    {state.notFound && (
-                        <div className={styles.noDataMessage}>
-                            <h2>{state.errorMessage || 'Recipe Not Found'}</h2>
-                            <Button onClick={() => navigate('/recipes')}>Back to Recipes</Button>
-                        </div>
-                    )}
                 </>
             )}
         </main>
