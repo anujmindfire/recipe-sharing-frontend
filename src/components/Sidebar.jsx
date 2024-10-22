@@ -4,6 +4,7 @@ import styles from '../styles/Sidebar.module.css';
 import withAuthentication from '../utils/withAuthenicate';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
+import constant from '../utils/constant';
 
 const Sidebar = () => {
     const [isToggleOpen, setIsToggleOpen] = useState(true);
@@ -11,14 +12,14 @@ const Sidebar = () => {
     const location = useLocation();
 
     const menuItems = [
-        { icon: 'https://cdn.builder.io/api/v1/image/assets/TEMP/802a7701aa4a6deb10457e7bb71e3430cbd4fbae7866a32daf0f8cfb9847f199?placeholderIfAbsent=true&apiKey=2ac8b4a54abb47edaafca4375aaa23ca', label: 'Add Recipe', path: `/profile/recipe/add` },
-        { icon: 'https://cdn.builder.io/api/v1/image/assets/TEMP/2beb0567234f2366a8a65cd6189ff27674bdd8caffff2735324e18eafa9d3472?placeholderIfAbsent=true&apiKey=2ac8b4a54abb47edaafca4375aaa23ca', label: 'My Recipes', path: `/profile/recipes` },
-        { icon: 'https://cdn.builder.io/api/v1/image/assets/TEMP/84b642dc96e9767f1e4c4cd9ba5ea89febffedbfeed6361c063455e162257e91?placeholderIfAbsent=true&apiKey=2ac8b4a54abb47edaafca4375aaa23ca', label: 'My Favorites', path: `/profile/favourites` },
-        { icon: 'https://cdn.builder.io/api/v1/image/assets/TEMP/97548eaf18c713094b7cfc5d4136dcacee8b769f39ec2d9132a7eb865f56e738?placeholderIfAbsent=true&apiKey=2ac8b4a54abb47edaafca4375aaa23ca', label: 'Following', path: `/profile/following` },
-        { icon: 'https://cdn.builder.io/api/v1/image/assets/TEMP/12ee3116cbb1bf8d6748ce3226b23c6b0c7c52e9b28bbcb6c693fdcd498c5b17?placeholderIfAbsent=true&apiKey=2ac8b4a54abb47edaafca4375aaa23ca', label: 'Followers', path: `/profile/follower` },
-        { icon: 'https://cdn.builder.io/api/v1/image/assets/TEMP/aa00526d61739d74ce9f636d5bed7d5ed52880addcea0180cb5b313fa3f52292?placeholderIfAbsent=true&apiKey=2ac8b4a54abb47edaafca4375aaa23ca', label: 'Edit Profile', path: `/profile/edit` },
-        { icon: 'https://cdn.builder.io/api/v1/image/assets/TEMP/41d8c039d9f44fce79557d896a66e29271cf60215b3b7146f0a65eb57baac2bf?placeholderIfAbsent=true&apiKey=2ac8b4a54abb47edaafca4375aaa23ca', label: 'Users', path: `/profile/list` },
-        { icon: 'https://cdn.builder.io/api/v1/image/assets/TEMP/ee63cb9d8b486a245e2b1c1d627da1a6f507874c07af7e54d3198d9a2b01a421?placeholderIfAbsent=true&apiKey=2ac8b4a54abb47edaafca4375aaa23ca', label: 'Chat', path: `/profile/chat` },
+        { icon: constant.imageLink.addRecipe, label: constant.label.addRecipe, path: constant.routes.addRecipe },
+        { icon: constant.imageLink.myRecipe, label: constant.label.myRecipe, path: constant.routes.myRecipe },
+        { icon: constant.imageLink.myFavo, label: constant.label.myFavo, path: constant.routes.myFavo },
+        { icon: constant.imageLink.following, label: constant.label.following, path: constant.routes.following },
+        { icon: constant.imageLink.followers, label: constant.label.followers, path: constant.routes.followers },
+        { icon: constant.imageLink.editProfile, label: constant.label.editProfile, path: constant.routes.editProfile },
+        { icon: constant.imageLink.users, label: constant.label.users, path: constant.routes.users },
+        { icon: constant.imageLink.chat, label: constant.label.chat, path: constant.routes.chat }
     ];
 
     const toggleSidebar = () => {

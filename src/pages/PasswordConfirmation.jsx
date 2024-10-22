@@ -1,139 +1,98 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import DOMPurify from 'dompurify';
-import InputField from '../components/Input';
+import Input from '../components/Input';
 import Snackbar from '../components/Snackbar';
 import Validation from '../components/Validation';
 import Button from '../components/Button';
 import styles from '../styles/Form.module.css';
-import { backendURL } from '../api/url';
+import { validateField, createHandleChange } from '../validation/validation.js';
+import { apiService } from '../apiService/Services.js';
+import constant from '../utils/constant.js';
+
+const initialState = {
+    password: '',
+    confirmPassword: '',
+    errors: { password: '', confirmPassword: '' },
+    loading: false,
+    showSnackbar: false,
+    successMessage: '',
+    errorMessage: ''
+}
 
 const PasswordConfirmation = () => {
+    const [formData, setFormData] = useState(initialState);
     const { txnId } = useParams();
     const navigate = useNavigate();
-
-    const [formData, setFormData] = useState({
-        password: '',
-        confirmPassword: '',
-        errors: {}
-    });
-    const [status, setStatus] = useState({
-        loading: false,
-        showSnackbar: false,
-        successMessage: '',
-        errorMessage: ''
-    });
-
-    const isValidPassword = (password) =>
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,50}$/.test(password);
-
-    const validateField = useCallback((name, value) => {
-        if (name === 'password') {
-            return isValidPassword(value) ? '' : 'Password must be 8-50 characters long, with at least one number, uppercase letter, lowercase letter, and special character.';
-        }
-        if (name === 'confirmPassword') {
-            return value === formData.password ? '' : 'Passwords do not match.';
-        }
-        return '';
-    }, [formData.password]);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        const sanitizedValue = DOMPurify.sanitize(value);
-
-        setFormData((prev) => ({
-            ...prev,
-            [name]: sanitizedValue,
-            errors: { ...prev.errors, [name]: validateField(name, sanitizedValue) }
-        }));
-
-        setStatus((prev) => ({ ...prev, errorMessage: '' }));
-    };
-
-    const validateForm = () => {
-        const { password, confirmPassword } = formData;
-        const errors = {
-            password: validateField('password', password),
-            confirmPassword: validateField('confirmPassword', confirmPassword),
-        };
-
-        setFormData((prev) => ({ ...prev, errors }));
-        return !Object.values(errors).some((error) => error !== '');
-    };
+    const handleChange = createHandleChange(setFormData);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setStatus((prev) => ({ ...prev, errorMessage: '' }));
-        setStatus((prev) => ({ ...prev, loading: true }));
-
-        if (!validateForm()) {
-            setStatus((prev) => ({ ...prev, loading: false }));
+    
+        const errors = {
+            password: validateField(constant.inputLabel.password.type, formData.password, formData),
+            confirmPassword: validateField(constant.inputLabel.confirmPassword.type, formData.confirmPassword, formData),
+        };
+    
+        if (Object.values(errors).some(error => error)) {
+            setFormData(prev => ({ ...prev, errors, errorMessage: '' }));
             return;
         }
-
-        try {
-            const response = await fetch(`${backendURL}/password/verify`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password: formData.password, confirmPassword: formData.confirmPassword, txnId })
-            });
-
-            const data = await response.json();
-            if (response.ok) {
-                setStatus({
-                    loading: false,
-                    showSnackbar: true,
-                    successMessage: data.message,
-                    errorMessage: ''
-                });
-                localStorage.removeItem('email');
-                localStorage.removeItem('txnId');
-                setTimeout(() => navigate('/signin'), 2000);
-            } else {
-                handleErrorResponse(data);
-            }
-        } catch (error) {
-            setStatus((prev) => ({
-                ...prev,
+    
+        const payload = {
+            password: formData.password,
+            confirmPassword: formData.confirmPassword,
+            txnId
+        };
+    
+        const result = await apiService(payload, constant.apiLabel.passwordConfirmation);
+        if (result.success) {
+            setFormData({
                 loading: false,
-                errorMessage: 'Unable to connect to the server. Please check your internet connection.'
-            }));
+                showSnackbar: true,
+                successMessage: result.data.message,
+            });
+            localStorage.removeItem(constant.localStorageKeys.email);
+            localStorage.removeItem(constant.localStorageKeys.txnId);
+            setTimeout(() => navigate(constant.routes.signIn), 2000);
+        } else {
+            handleErrorResponse(result.data);
         }
     };
 
     const handleErrorResponse = (data) => {
-        setStatus((prev) => ({
+        setFormData((prev) => ({
             ...prev,
             loading: false,
             errorMessage: data.message
         }));
-        if (data.message === 'Link has expired') {
-            setTimeout(() => navigate('/forgot-password'), 1000);
+        if (data.message === constant.validationMessage.linkExpired) {
+            setTimeout(() => navigate(constant.routes.forgotPassword), 1000);
         }
     };
 
     useEffect(() => {
-        if (!localStorage.getItem('email') && !localStorage.getItem('txnId')) {
-            navigate('/forgot-password');
+        if (!constant.localStorageUtils.getItem(constant.localStorageKeys.email)
+            && !constant.localStorageUtils.getItem(constant.localStorageKeys.txnId)) {
+            navigate(constant.routes.forgotPassword);
         }
     }, [navigate]);
 
     useEffect(() => {
-        const handleUnload = () => localStorage.setItem('isLeavingPasswordPage', 1);
+        const handleUnload = () => constant.localStorageUtils.setItem(constant.localStorageKeys.isLeavingPasswordPage, constant.localStorageKeys.isLeavingPasswordPageValue);
         window.addEventListener('beforeunload', handleUnload);
         return () => window.removeEventListener('beforeunload', handleUnload);
     }, []);
 
     useEffect(() => {
-        let matchTxnId = txnId === localStorage.getItem('txnId');
+        let matchTxnId = txnId === constant.localStorageUtils.getItem(constant.localStorageKeys.txnId);
         if (!matchTxnId) {
-            navigate('/forgot-password');
+            navigate(constant.routes.forgotPassword);
         }
-        if (Number(localStorage.getItem('isLeavingPasswordPage')) === 1 && matchTxnId) {
-            localStorage.setItem('isLeavingPasswordPage', 2);
-            navigate('/forgot-password');
-        } else if (Number(localStorage.getItem('isLeavingPasswordPage')) === 2 && matchTxnId) {
-            localStorage.removeItem('isLeavingPasswordPage');
+        if (Number(constant.localStorageUtils.getItem(constant.localStorageKeys.isLeavingPasswordPage)) === constant.localStorageKeys.isLeavingPasswordPageValue && matchTxnId) {
+            constant.localStorageUtils.setItem(constant.localStorageKeys.isLeavingPasswordPage, constant.localStorageKeys.isLeavingPasswordPageValue2);
+            navigate(constant.routes.forgotPassword);
+        } else if (Number(constant.localStorageUtils.getItem(constant.localStorageKeys.isLeavingPasswordPageValue2)) === constant.localStorageKeys.isLeavingPasswordPageValue2 && matchTxnId) {
+            localStorage.removeItem(constant.localStorageKeys.isLeavingPasswordPage);
         }
     }, [navigate, txnId]);
 
@@ -142,45 +101,45 @@ const PasswordConfirmation = () => {
             <section className={styles.formWrapper}>
                 <div className={styles.card}>
                     <form className={styles.formFields} onSubmit={handleSubmit} noValidate>
-                        <h2 className={styles.formTitle}>Reset your password</h2>
+                        <h2 className={styles.formTitle}>{constant.label.resetPassword}</h2>
 
-                        <InputField
-                            label='Password'
-                            name='password'
-                            type='password'
+                        <Input
+                            id={constant.inputLabel.password.type}
+                            type={constant.inputLabel.password.type}
+                            label={constant.inputLabel.password.label}
+                            name={constant.inputLabel.password.type}
                             value={formData.password}
                             onChange={handleChange}
-                            error={formData.errors.password}
-                            disabled={status.loading}
+                            disabled={formData.loading}
                         />
 
                         <Validation error={formData.errors.password} show={!!formData.errors.password} />
 
-                        <InputField
-                            label='Confirm Password'
-                            name='confirmPassword'
-                            type='password'
+                        <Input
+                            id={constant.inputLabel.confirmPassword.type}
+                            type={constant.inputLabel.password.type}
+                            label={constant.inputLabel.confirmPassword.label}
+                            name={constant.inputLabel.confirmPassword.type}
                             value={formData.confirmPassword}
                             onChange={handleChange}
-                            error={formData.errors.confirmPassword}
-                            disabled={status.loading}
+                            disabled={formData.loading}
                         />
 
                         <Validation error={formData.errors.confirmPassword} show={!!formData.errors.confirmPassword} />
 
-                        <Button type='submit' loading={status.loading} disabled={status.loading}>
-                            Reset Password
+                        <Button type={constant.buttonType.submit} loading={formData.loading} disabled={formData.loading}>
+                            {constant.label.resetPasswordLabel}
                         </Button>
 
-                        <Validation error={status.errorMessage} show={!!status.errorMessage} />
+                        <Validation error={formData.errorMessage} show={!!formData.errorMessage} />
                     </form>
                 </div>
             </section>
 
             <Snackbar
-                message={status.successMessage}
-                isVisible={status.showSnackbar}
-                onClose={() => setStatus((prev) => ({ ...prev, showSnackbar: false }))}
+                message={formData.successMessage}
+                isVisible={formData.showSnackbar}
+                onClose={() => setFormData((prev) => ({ ...prev, showSnackbar: false }))}
             />
         </main>
     );

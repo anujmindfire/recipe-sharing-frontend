@@ -4,7 +4,6 @@ import styles from '../styles/OTP.module.css';
 import Snackbar from '../components/Snackbar';
 import Button from '../components/Button';
 import Validation from '../components/Validation';
-import { backendURL } from '../api/url';
 
 const OTP = () => {
     const [otp, setOtp] = useState(new Array(6).fill(''));
@@ -115,7 +114,7 @@ const OTP = () => {
             return;
         }
 
-        const { ok, message } = await handleApiResponse(`${backendURL}/verify`, { otp: otp.join(''), txnId: transactionId });
+        const { ok, message } = await handleApiResponse(`${process.env.REACT_APP_APIURL}/verify`, { otp: otp.join(''), txnId: transactionId });
 
         if (ok) {
             setStatus(prev => ({ ...prev, successMessage: message, showSnackbar: true }));
@@ -131,7 +130,7 @@ const OTP = () => {
 
     const handleResendOtp = async () => {
         const transactionId = localStorage.getItem('txnId');
-        const { ok, message } = await handleApiResponse(`${backendURL}/resend`, { txnId: transactionId });
+        const { ok, message } = await handleApiResponse(`${process.env.REACT_APP_APIURL}/resend`, { txnId: transactionId });
 
         if (ok) {
             setStatus(prev => ({ ...prev, successMessage: message, showSnackbar: true, isResendDisabled: true, resendTimer: 60 }));

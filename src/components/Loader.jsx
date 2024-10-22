@@ -1,12 +1,13 @@
 import React from 'react';
 import styles from '../styles/Loader.module.css';
+import constant from '../utils/constant';
 
 const Loader = () => {
     return (
         <div className={styles.loaderContainer}>
             <img
-                src='https://x.yummlystatic.com/web/spinner-light-bg.gif'
-                alt='Loading...'
+                src={constant.imageLink.loader}
+                alt={constant.imageAlt.loading}
                 className={styles.spinner}
             />
         </div>

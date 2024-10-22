@@ -1,1 +1,0 @@
-export const backendURL = 'https://foodie-backend-wi9m.onrender.com/api';
