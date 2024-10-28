@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from '../styles/Loader.module.css';
-import constant from '../utils/constant';
+import constant from '../utils/constant.js';
 
 const Loader = () => {
     return (

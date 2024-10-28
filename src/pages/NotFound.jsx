@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Text, Button } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import constant from '../utils/constant';
+import constant from '../utils/constant.js';
 
 const NotFound = () => {
     const navigate = useNavigate();

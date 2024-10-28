@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import constant from './constant';
+import constant from './constant.js';
 
 const withAuthentication = (Component) => {
   return (props) => {

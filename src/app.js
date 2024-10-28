@@ -1,10 +1,10 @@
 import React, { Suspense } from 'react';
 import { Box } from '@chakra-ui/react';
 import { Route, Routes, Navigate } from 'react-router-dom';
-import Headers from './components/Header';
-import Loader from './components/Loader';
-import routesConstant from './utils/routes';
-import constant from './utils/constant';
+import Headers from './components/Header.jsx';
+import Loader from './components/Loader.jsx';
+import routesConstant from './utils/routes.js';
+import constant from './utils/constant.js';
 
 const App = () => {
   return (

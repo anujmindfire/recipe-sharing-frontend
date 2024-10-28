@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import constant from '../utils/constant';
+import constant from '../utils/constant.js';
 
 const parseTimeString = (timeString) => {
     const [value, unit] = timeString.split(' ');

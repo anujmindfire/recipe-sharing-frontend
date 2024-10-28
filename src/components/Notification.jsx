@@ -2,7 +2,7 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import styles from '../styles/Notification.module.css';
-import constant from '../utils/constant';
+import constant from '../utils/constant.js';
 
 const Notification = ({ isOpen, onClose, initialNotifications = [], onDeleteNotification }) => {
     return (

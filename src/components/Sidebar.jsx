@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styles from '../styles/Sidebar.module.css';
-import withAuthentication from '../utils/withAuthenicate';
+import withAuthentication from '../utils/withAuthenicate.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-import constant from '../utils/constant';
+import constant from '../utils/constant.js';
 
 const Sidebar = () => {
     const [isToggleOpen, setIsToggleOpen] = useState(true);
@@ -12,7 +12,7 @@ const Sidebar = () => {
     const location = useLocation();
 
     const menuItems = [
-        { icon: constant.imageLink.addRecipe, label: constant.label.addRecipe, path: constant.routes.addRecipe },
+        // { icon: constant.imageLink.addRecipe, label: constant.label.addRecipe, path: constant.routes.addRecipe },
         { icon: constant.imageLink.myRecipe, label: constant.label.myRecipe, path: constant.routes.myRecipe },
         { icon: constant.imageLink.myFavo, label: constant.label.myFavo, path: constant.routes.myFavo },
         { icon: constant.imageLink.following, label: constant.label.following, path: constant.routes.following },

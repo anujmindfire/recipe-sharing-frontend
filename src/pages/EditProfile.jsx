@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styles from '../styles/Form.module.css';
-import Button from '../components/Button';
-import Snackbar from '../components/Snackbar';
-import InputField from '../components/Input';
-import Validation from '../components/Validation';
+import Button from '../components/Button.jsx';
+import Snackbar from '../components/Snackbar.jsx';
+import InputField from '../components/Input.jsx';
+import Validation from '../components/Validation.jsx';
 import { validateField, createHandleChange } from '../validation/validation.js';
-import { apiService } from '../apiService/Services.js';
+import { apiService } from '../apiService/services.js';
 import constant from '../utils/constant.js';
 
 const EditProfile = () => {

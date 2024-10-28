@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../styles/OTP.module.css';
-import Snackbar from '../components/Snackbar';
-import Button from '../components/Button';
-import Validation from '../components/Validation';
+import Snackbar from '../components/Snackbar.jsx';
+import Button from '../components/Button.jsx';
+import Validation from '../components/Validation.jsx';
 
 const OTP = () => {
     const [otp, setOtp] = useState(new Array(6).fill(''));

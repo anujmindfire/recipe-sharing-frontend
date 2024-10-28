@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import Input from '../components/Input';
-import Button from '../components/Button';
-import Validation from '../components/Validation';
-import Snackbar from '../components/Snackbar';
+import Input from '../components/Input.jsx';
+import Button from '../components/Button.jsx';
+import Validation from '../components/Validation.jsx';
+import Snackbar from '../components/Snackbar.jsx';
 import styles from '../styles/AddRecipe.module.css';
 import { validateField, createHandleChange } from '../validation/validation.js';
-import { apiService } from '../apiService/Services.js';
+import { apiService } from '../apiService/services.js';
 import constant from '../utils/constant.js';
 
 const initialState = {
@@ -145,23 +145,25 @@ const AddRecipe = () => {
             )}
             <div style={{ marginTop: '10px' }}>
                 {formData.errors[constant.id] && (
-                    <Validation 
+                    <Validation
                         error={`${constant.label} is required`}
-                        show={true} 
+                        show={true}
                     />
                 )}
             </div>
         </div>
     );
-    
+
     return (
         <main className={styles.container}>
+            <h2 className={styles.heading}>Create New Recipe</h2>
+            <hr className={styles.divider} />
             <form className={styles.form} onSubmit={handleCreateRecipe} noValidate>
                 {renderFormGroup(constant.inputLabel.recipeTitle)}
                 {renderFormGroup(constant.inputLabel.ingredients, true)}
                 {renderFormGroup(constant.inputLabel.preparationSteps, true)}
                 {renderFormGroup(constant.inputLabel.description, true)}
-    
+
                 <label className={styles.uploadButton}>
                     <input
                         type={constant.imageType.file}
@@ -170,15 +172,15 @@ const AddRecipe = () => {
                         onChange={handleImageChange}
                     />
                     <span className={styles.buttonText}>
-                        {formData.imageUploadSuccess ? constant.label.imageUpload : constant.label.chooseImage }
+                        {formData.imageUploadSuccess ? constant.label.imageUpload : constant.label.chooseImage}
                     </span>
                 </label>
-    
+
                 {renderFormGroup(constant.inputLabel.preparationTime)}
                 {renderFormGroup(constant.inputLabel.cookingTime)}
-    
+
                 <Button type={constant.buttonType.submit} loading={formData.loading} disabled={formData.loading}>{constant.label.addRecipe}</Button>
-    
+
                 <Validation error={formData.errorMessage} show={!!formData.errorMessage} />
 
                 <Snackbar isVisible={formData.showSnackbar} onClose={() => setFormData((prev) => ({ ...prev, showSnackbar: false }))} message={formData.successMessage} />

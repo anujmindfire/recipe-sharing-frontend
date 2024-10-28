@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Input from '../components/Input';
-import Snackbar from '../components/Snackbar';
-import Validation from '../components/Validation';
-import Button from '../components/Button';
+import Input from '../components/Input.jsx';
+import Snackbar from '../components/Snackbar.jsx';
+import Validation from '../components/Validation.jsx';
+import Button from '../components/Button.jsx';
 import styles from '../styles/Form.module.css';
 import { validateField, createHandleChange } from '../validation/validation.js';
-import { apiService } from '../apiService/Services.js';
+import { apiService } from '../apiService/services.js';
 import constant from '../utils/constant.js';
 
 const initialState = {

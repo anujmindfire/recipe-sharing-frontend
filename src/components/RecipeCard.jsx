@@ -12,9 +12,9 @@ const RecipeCard = ({ recipes }) => {
     return (
         <section className={styles.recipeGrid}>
             {recipes.map((recipe) => (
-                <article 
-                    key={recipe._id} 
-                    className={styles.cardContainer} 
+                <article
+                    key={recipe._id}
+                    className={styles.cardContainer}
                     onClick={() => handleCardClick(recipe._id)}
                 >
                     <div
@@ -25,6 +25,14 @@ const RecipeCard = ({ recipes }) => {
                     ></div>
                     <div className={styles.textContainer}>
                         <h2 className={styles.title}>{recipe.title}</h2>
+                        <div className={styles.ratingContainer}>
+                            <span className={styles.averageRating}>
+                                ★ {recipe.averageRating}
+                            </span>
+                            <span className={styles.totalRating}>
+                                ({recipe.totalRating})
+                            </span>
+                        </div>
                     </div>
                 </article>
             ))}

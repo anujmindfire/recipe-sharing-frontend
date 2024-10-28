@@ -1,6 +1,6 @@
 import DOMPurify from 'dompurify';
 import regex from './regex.js';
-import constant from '../utils/constant';
+import constant from '../utils/constant.js';
 
 const validateField = (name, value, formData) => {
     switch (name) {

@@ -1,20 +1,20 @@
 import { lazy } from 'react';
 
 // Lazy-loaded components
-const SignUp = lazy(() => import('../pages/Signup'));
-const OTP = lazy(() => import('../pages/OTP'));
-const ForgotPassword = lazy(() => import('../pages/ForgotPassword'));
-const PasswordConfirmation = lazy(() => import('../pages/PasswordConfirmation'));
-const SignIn = lazy(() => import('../pages/Signin'));
-const RecipeList = lazy(() => import('../pages/RecipeList'));
-const RecipeDetailsPage = lazy(() => import('../pages/RecipeDetailsPage'));
-const ProfilePage = lazy(() => import('../pages/ProfilePage'));
-const AddRecipe = lazy(() => import('../pages/AddRecipe'));
-const MyRecipes = lazy(() => import('../pages/MyRecipes'));
-const ProfileList = lazy(() => import('../pages/ProfileList'));
-const EditProfile = lazy(() => import('../pages/EditProfile'));
-const ChatSidebar = lazy(() => import('../pages/ChatSidebar'));
-const NotFound = lazy(() => import('../pages/NotFound'));
+const SignUp = lazy(() => import('../pages/Signup.jsx'));
+const OTP = lazy(() => import('../pages/OTP.jsx'));
+const ForgotPassword = lazy(() => import('../pages/ForgotPassword.jsx'));
+const PasswordConfirmation = lazy(() => import('../pages/PasswordConfirmation.jsx'));
+const SignIn = lazy(() => import('../pages/Signin.jsx'));
+const RecipeList = lazy(() => import('../pages/RecipeList.jsx'));
+const RecipeDetailsPage = lazy(() => import('../pages/RecipeDetailsPage.jsx'));
+const ProfilePage = lazy(() => import('../pages/ProfilePage.jsx'));
+const AddRecipe = lazy(() => import('../pages/AddRecipe.jsx'));
+const MyRecipes = lazy(() => import('../pages/MyRecipes.jsx'));
+const ProfileList = lazy(() => import('../pages/ProfileList.jsx'));
+const EditProfile = lazy(() => import('../pages/EditProfile.jsx'));
+const ChatSidebar = lazy(() => import('../pages/ChatSidebar.jsx'));
+const NotFound = lazy(() => import('../pages/NotFound.jsx'));
 
 const routesConstant = {
     publicRoutes: [

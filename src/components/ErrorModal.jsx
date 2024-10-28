@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../styles/ErrorModal.module.css';
-import Button from './Button';
-import constant from '../utils/constant';
+import Button from './Button.jsx';
+import constant from '../utils/constant.js';
 
 const ErrorModal = ({ message, onClose }) => {
     return (

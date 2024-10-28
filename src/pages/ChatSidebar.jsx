@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import styles from '../styles/ChatSidebar.module.css';
-import Loader from '../components/Loader';
-import SearchFilterBar from '../components/SearchFilterBar';
-import Message from '../pages/Message';
-import withAuthentication from '../utils/withAuthenicate';
-import { apiService } from '../apiService/Services.js';
+import Loader from '../components/Loader.jsx';
+import SearchFilterBar from '../components/SearchFilterBar.jsx';
+import Message from '../pages/Message.jsx';
+import withAuthentication from '../utils/withAuthenicate.js';
+import { apiService } from '../apiService/services.js';
 import constant from '../utils/constant.js';
 import { handleInputChange, handleModalClose } from '../utils/commonFunction.js';
 import ErrorModal from '../components/ErrorModal.jsx';

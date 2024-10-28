@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import styles from '../styles/SearchFilterBar.module.css';
-import useDebounce from './UseDebounce';
-import constant from '../utils/constant';
+import useDebounce from './UseDebounce.jsx';
+import constant from '../utils/constant.js';
 
 const SearchFilterBar = ({ searchParams, handleSearchChange, uniquePrepTimes, uniqueCookTimes, placeholder }) => {
     const [activeDropdown, setActiveDropdown] = useState('');

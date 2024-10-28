@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styles from '../styles/Message.module.css';
-import Loader from '../components/Loader';
+import Loader from '../components/Loader.jsx';
 import io from 'socket.io-client';
-import constant from '../utils/constant';
-import { apiService } from '../apiService/Services.js';
+import constant from '../utils/constant.js';
+import { apiService } from '../apiService/services.js';
 
 const Message = ({ sender, receiver, receiverName }) => {
     const [messages, setMessages] = useState([]);

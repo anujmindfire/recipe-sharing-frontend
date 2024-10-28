@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import styles from '../styles/RecipePage.module.css';
-import RecipeCard from '../components/RecipeCard';
-import SearchFilterBar from '../components/SearchFilterBar';
-import withAuthentication from '../utils/withAuthenicate';
-import Loader from '../components/Loader';
-import ErrorModal from '../components/ErrorModal';
-import { apiService } from '../apiService/Services.js';
+import RecipeCard from '../components/RecipeCard.jsx';
+import SearchFilterBar from '../components/SearchFilterBar.jsx';
+import withAuthentication from '../utils/withAuthenicate.js';
+import Loader from '../components/Loader.jsx';
+import ErrorModal from '../components/ErrorModal.jsx';
+import { apiService } from '../apiService/services.js';
 import constant from '../utils/constant.js';
 import { sortTimes, handleModalClose, handleInputChange } from '../utils/commonFunction.js';
 

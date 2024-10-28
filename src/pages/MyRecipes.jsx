@@ -1,16 +1,20 @@
 import React, { useState, useCallback, useRef, useMemo } from 'react';
-import RecipeCard from '../components/RecipeCard';
-import SearchFilterBar from '../components/SearchFilterBar';
-import Loader from '../components/Loader';
-import ErrorModal from '../components/ErrorModal';
-import withAuthentication from '../utils/withAuthenicate';
+import RecipeCard from '../components/RecipeCard.jsx';
+import SearchFilterBar from '../components/SearchFilterBar.jsx';
+import Loader from '../components/Loader.jsx';
+import ErrorModal from '../components/ErrorModal.jsx';
+import Modal from '../components/Modal.jsx';
+import AddRecipe from './AddRecipe.jsx';
+import withAuthentication from '../utils/withAuthenicate.js';
 import { useLocation } from 'react-router-dom';
 import styles from '../styles/ProfilePage.module.css';
-import constant from '../utils/constant';
-import { handleInputChange, handleModalClose, sortTimes, useScrollPagination } from '../utils/commonFunction';
-import { apiService } from '../apiService/Services';
+import constant from '../utils/constant.js';
+import { handleInputChange, handleModalClose, sortTimes, useScrollPagination } from '../utils/commonFunction.js';
+import { apiService } from '../apiService/services.js';
 
 const MyRecipe = () => {
+    const [isAddRecipeModalVisible, setAddRecipeModalVisible] = useState(false);
+    
     const initialSearchParams = useMemo(() => ({
         query: '',
         rating: '',
@@ -86,10 +90,18 @@ const MyRecipe = () => {
                 placeholder={constant.searchLabel.recipe}
             />
 
+            <button className={styles.addButton} onClick={() => setAddRecipeModalVisible(true)}>
+                Add New
+            </button>
+
             {loading && !notFound && <Loader />}
             {notFound && <p className={styles.noDataMessage}>{constant.label.noRecipeFound}</p>}
             <RecipeCard recipes={recipes} />
             {showErrorModal && <ErrorModal message={errorMessage} onClose={handleErrorModalClose} />}
+
+            <Modal isVisible={isAddRecipeModalVisible} onClose={() => setAddRecipeModalVisible(false)}>
+                <AddRecipe />
+            </Modal>
         </div>
     );
 };

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import styles from '../styles/Form.module.css';
-import Input from '../components/Input';
-import Button from '../components/Button';
-import Snackbar from '../components/Snackbar';
-import Validation from '../components/Validation';
+import Input from '../components/Input.jsx';
+import Button from '../components/Button.jsx';
+import Snackbar from '../components/Snackbar.jsx';
+import Validation from '../components/Validation.jsx';
 import { validateField, createHandleChange } from '../validation/validation.js';
-import { apiService } from '../apiService/Services.js';
+import { apiService } from '../apiService/services.js';
 import constant from '../utils/constant.js';
 import { useClearLocalStorageAndRedirect } from '../utils/commonFunction.js';
 

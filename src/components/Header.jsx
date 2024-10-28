@@ -3,13 +3,13 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styles from '../styles/Header.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightFromBracket, faCircleUser } from '@fortawesome/free-solid-svg-icons';
-import ErrorModal from './ErrorModal';
-import Loader from './Loader';
-import Notification from '../components/Notification';
+import ErrorModal from './ErrorModal.jsx';
+import Loader from './Loader.jsx';
+import Notification from '../components/Notification.jsx';
 import { io } from 'socket.io-client';
-import constant from '../utils/constant';
-import { apiService } from '../apiService/Services';
-import { clearLocalStorage } from '../utils/tokenServices'
+import constant from '../utils/constant.js';
+import { apiService } from '../apiService/services.js';
+import { clearLocalStorage } from '../utils/tokenServices.js'
 
 const Header = () => {
     const location = useLocation();

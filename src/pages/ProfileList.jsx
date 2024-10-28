@@ -1,14 +1,14 @@
 import React, { useState, useCallback, useRef, useMemo } from 'react';
 import styles from '../styles/ProfileList.module.css';
-import Loader from '../components/Loader';
-import ErrorModal from '../components/ErrorModal';
-import Snackbar from '../components/Snackbar';
-import SearchFilterBar from '../components/SearchFilterBar';
+import Loader from '../components/Loader.jsx';
+import ErrorModal from '../components/ErrorModal.jsx';
+import Snackbar from '../components/Snackbar.jsx';
+import SearchFilterBar from '../components/SearchFilterBar.jsx';
 import { useLocation } from 'react-router-dom';
-import withAuthentication from '../utils/withAuthenicate';
-import constant from '../utils/constant';
-import { handleInputChange, handleModalClose, useScrollPagination } from '../utils/commonFunction';
-import { apiService } from '../apiService/Services';
+import withAuthentication from '../utils/withAuthenicate.js';
+import constant from '../utils/constant.js';
+import { handleInputChange, handleModalClose, useScrollPagination } from '../utils/commonFunction.js';
+import { apiService } from '../apiService/services.js';
 
 const ProfileList = () => {
     const initialSearchParams = useMemo(() => ({
