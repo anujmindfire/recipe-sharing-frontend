@@ -43,7 +43,7 @@ export const apiCalls = async (payload, keys) => {
             return await axios.post(url, payload, { headers });
 
         case constant.apiLabel.recipelist:
-            url = `${process.env.REACT_APP_APIURL}/recipe?page=${payload.page}&searchKey=${payload.query || ''}&ratingValue=${payload.rating}&preparationTime=${payload.prepTime}&cookingTime=${payload.cookTime}`;
+            url = `${process.env.REACT_APP_APIURL}/recipe?page=${payload.page}&searchKey=${payload.query || '&limit=20'}&ratingValue=${payload.rating}&preparationTime=${payload.prepTime}&cookingTime=${payload.cookTime}`;
             return await axios.get(url, { headers });
 
         case constant.apiLabel.myRecipe:
