@@ -4,6 +4,7 @@ import styles from '../styles/Form.module.css';
 import Input from '../components/Input.jsx';
 import Button from '../components/Button.jsx';
 import Validation from '../components/Validation.jsx';
+import ErrorBoundary from '../components/ErrorBoundary.jsx';
 import { validateField, createHandleChange } from '../validation/validation.js';
 import { apiService } from '../apiService/services.js';
 import constant from '../utils/constant.js';
@@ -73,6 +74,7 @@ const SignIn = () => {
                             value={formData.email}
                             onChange={handleChange}
                             disabled={formData.loading}
+                            tabIndex='1'
                         />
                         <Validation error={formData.errors.email} show={!!formData.errors.email} />
 
@@ -84,19 +86,27 @@ const SignIn = () => {
                             value={formData.password}
                             onChange={handleChange}
                             disabled={formData.loading}
+                            tabIndex='2'
                         />
                         <Validation error={formData.errors.password} show={!!formData.errors.password} />
 
-                        <Button type={constant.buttonType.submit} loading={formData.loading} disabled={formData.loading}>{constant.label.continue}</Button>
+                        <Button 
+                            type={constant.buttonType.submit} 
+                            loading={formData.loading} 
+                            disabled={formData.loading}
+                            tabIndex='3'
+                        >
+                            {constant.label.continue}
+                        </Button>
 
                         <Validation error={formData.errorMessage} show={!!formData.errorMessage} />
 
                         <p className={styles.signInText}>
-                            <Link to={constant.routes.forgotPassword} className={styles.signInLink}>{constant.label.forgotPassword}</Link>
+                            <Link to={constant.routes.forgotPassword} className={styles.signInLink} tabIndex='4'>{constant.label.forgotPassword}</Link>
                         </p>
 
                         <p className={styles.signInText}>
-                            {constant.label.haveAccount} <Link to={constant.routes.signUp} className={styles.signInLink}>{constant.label.signup}</Link>
+                            {constant.label.haveAccount} <Link to={constant.routes.signUp} className={styles.signInLink} tabIndex='5'>{constant.label.signup}</Link>
                         </p>
                     </form>
                 </div>
@@ -105,4 +115,10 @@ const SignIn = () => {
     );
 };
 
-export default SignIn;
+const SignInWithErrorBoundary = () => (
+    <ErrorBoundary>
+        <SignIn />
+    </ErrorBoundary>
+);
+
+export default SignInWithErrorBoundary;

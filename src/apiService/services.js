@@ -1,200 +1,110 @@
+import axios from 'axios';
 import constant from '../utils/constant.js';
 import { refreshAccessToken } from '../utils/tokenServices.js';
+
 const refreshtoken = localStorage.getItem(constant.localStorageKeys.refreshToken);
 const id = localStorage.getItem(constant.localStorageKeys.userId);
 
 export const apiService = async (payload, keys) => {
     try {
-
         let response = await apiCalls(payload, keys);
 
-        const data = await response.json();
-
-        if (response.ok) {
-            return { success: true, data };
-        } else if (response.status === 401 && data.unauthorized) {
+        if (response.status === constant.statusCode.success) {
+            return { success: true, data: response.data };
+        } else if (response.status === constant.statusCode.unAuthorized && response.data.unauthorized) {
             return await refreshAccessToken(refreshtoken, id);
         } else {
-            return { success: false, message: data.message };
+            return { success: false, message: response.data.message };
         }
     } catch (error) {
-        return { success: false, message: constant.general.serverError };
+        return { success: false, message: error.response ? error.response.data.message : constant.general.serverError };
     }
 };
 
 export const apiCalls = async (payload, keys) => {
-    let response;
-    if (keys === constant.apiLabel.signin) {
-        response = await fetch(`${process.env.REACT_APP_APIURL}/auth/signin`, {
-            method: constant.apiMethod.POST,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-        });
-    } else if (keys === constant.apiLabel.signup) {
-        response = await fetch(`${process.env.REACT_APP_APIURL}/user`, {
-            method: constant.apiMethod.POST,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-        });
-    } else if (keys === constant.apiLabel.logout) {
-        const { accesstoken, userId, refreshToken } = payload
-        response = await fetch(`${process.env.REACT_APP_APIURL}/auth/logout`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                accesstoken,
-                refreshToken,
-                id: userId,
-            },
-        });
-    } else if (keys === constant.apiLabel.recipelist) {
-        const { page, query, rating, prepTime, cookTime, accesstoken, userId } = payload;
-        response = await fetch(`${process.env.REACT_APP_APIURL}/recipe?page=${page}${query ? '' : '&limit=20'}&searchKey=${query}&ratingValue=${rating}&preparationTime=${prepTime}&cookingTime=${cookTime}`, {
-            method: constant.apiMethod.GET,
-            headers: {
-                'Content-Type': 'application/json',
-                accesstoken,
-                id: userId,
-            },
-        });
-    } else if (keys === constant.apiLabel.myRecipe) {
-        const { page, query, rating, prepTime, cookTime, accesstoken, userId, location } = payload;
+    let url;
+    const headers = {
+        'Content-Type': 'application/json',
+        accesstoken: localStorage.getItem(constant.localStorageKeys.accessToken),
+        id: localStorage.getItem(constant.localStorageKeys.userId),
+    };
 
-        let url = location === constant.label.myRecipe ? 
-        `${process.env.REACT_APP_APIURL}/recipe?limit=20&creator=${userId}&page=${page}&searchKey=${query}&ratingValue=${rating}&preparationTime=${prepTime}&cookingTime=${cookTime}` : 
-        `${process.env.REACT_APP_APIURL}/favorites?limit=20&page=${page}&searchKey=${query}&ratingValue=${rating}&preparationTime=${prepTime}&cookingTime=${cookTime}`
+    switch (keys) {
+        case constant.apiLabel.signin:
+            url = `${process.env.REACT_APP_APIURL}/auth/signin`;
+            return await axios.post(url, payload, { headers });
+        
+        case constant.apiLabel.signup:
+            url = `${process.env.REACT_APP_APIURL}/user`;
+            return await axios.post(url, payload, { headers });
 
-        response = await fetch(url, {
-            method: constant.apiMethod.GET,
-            headers: {
-                'Content-Type': 'application/json',
-                accesstoken,
-                id: userId,
-            },
-        });
-    } else if (keys === constant.apiLabel.oneRecipe) {
-        const { id, accesstoken, userId } = payload;
-        response = await fetch(`${process.env.REACT_APP_APIURL}/recipe?_id=${id}`, {
-            method: constant.apiMethod.GET,
-            headers: {
-                'Content-Type': 'application/json',
-                accesstoken,
-                id: userId,
-            },
-        });
-    } else if (keys === constant.apiLabel.addRating) {
-        const { accesstoken, userId } = payload
-        response = await fetch(`${process.env.REACT_APP_APIURL}/recipefeedback`, {
-            method: constant.apiMethod.POST,
-            headers: {
-                'Content-Type': 'application/json',
-                accesstoken,
-                id: userId,
-            },
-            body: JSON.stringify(payload),
-        });
-    } else if (keys === constant.apiLabel.savedRecipe) {
-        const { recipeId, add, accesstoken, userId } = payload;
-        response = await fetch(`${process.env.REACT_APP_APIURL}/user?recipeId=${recipeId}&add=${add}`, {
-            method: constant.apiMethod.GET,
-            headers: {
-                'Content-Type': 'application/json',
-                accesstoken,
-                id: userId,
-            }
-        });
-    } else if (keys === constant.apiLabel.forgotPassword) {
-        response = await fetch(`${process.env.REACT_APP_APIURL}/password/sendEmail`, {
-            method: constant.apiMethod.POST,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-    } else if (keys === constant.apiLabel.passwordConfirmation) {
-        response = await fetch(`${process.env.REACT_APP_APIURL}/password/verify`, {
-            method: constant.apiMethod.POST,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-    } else if (keys === constant.apiLabel.followClick) {
-        const { accesstoken, userId } = payload;
-        response = await fetch(`${process.env.REACT_APP_APIURL}/follow`, {
-            method: constant.apiMethod.POST,
-            headers: {
-                'Content-Type': 'application/json',
-                accesstoken,
-                id: userId,
-            },
-            body: JSON.stringify(payload)
-        });
-    } else if (keys === constant.apiLabel.userProfile) {
-        const { accesstoken, userId, page, searchKey, pathMap } = payload;
-        const pathMapQuery = new URLSearchParams(pathMap).toString();
-        response = await fetch(`${process.env.REACT_APP_APIURL}/user?${pathMapQuery}&limit=20&page=${page}&searchKey=${searchKey}`, {
-            method: constant.apiMethod.GET,
-            headers: {
-                'Content-Type': 'application/json',
-                accesstoken,
-                id: userId,
-            }
-        });
-    } else if (keys === constant.apiLabel.recipeImage) {
-        response = await fetch(`${process.env.REACT_APP_APIURL}/getS3Url`, {
-            method: constant.apiMethod.POST,
-            body: payload
-        });
-    } else if (keys === constant.apiLabel.addRecipe) {
-        const { accesstoken, userId } = payload;
-        response = await fetch(`${process.env.REACT_APP_APIURL}/recipe`, {
-            method: constant.apiMethod.POST,
-            headers: {
-                'Content-Type': 'application/json',
-                accesstoken,
-                id: userId,
-            },
-            body: JSON.stringify(payload)
-        });
-    } else if (keys === constant.apiLabel.oneUser) {
-        const { accesstoken, userId } = payload;
-        response = await fetch(`${process.env.REACT_APP_APIURL}/user?_id=${userId}`, {
-            method: constant.apiMethod.GET,
-            headers: {
-                'Content-Type': 'application/json',
-                accesstoken,
-                id: userId,
-            },
-        });
-    } else if (keys === constant.apiLabel.updateUserProfile) {
-        const { accesstoken, userId } = payload;
-        response = await fetch(`${process.env.REACT_APP_APIURL}/update`, {
-            method: constant.apiMethod.PUT,
-            headers: {
-                'Content-Type': 'application/json',
-                accesstoken,
-                id: userId,
-            },
-            body: JSON.stringify(payload),
-        });
-    } else if (keys === constant.apiLabel.message) {
-        const { accesstoken, userId } = payload;
-        response = await fetch(`${process.env.REACT_APP_APIURL}/send`, {
-            method: constant.apiMethod.POST,
-            headers: {
-                'Content-Type': 'application/json',
-                accesstoken,
-                id: userId,
-            },
-            body: JSON.stringify(payload),
-        });
-    } else if (keys === constant.apiLabel.getChat) {
-        const { accesstoken, userId, sender, receiver } = payload;
-        response = await fetch(`${process.env.REACT_APP_APIURL}/chat/${sender}/${receiver}`, {
-            method: constant.apiMethod.GET,
-            headers: {
-                'Content-Type': 'application/json',
-                accesstoken,
-                id: userId,
-            },
-        });
+        case constant.apiLabel.logout:
+            url = `${process.env.REACT_APP_APIURL}/auth/logout`;
+            return await axios.post(url, payload, { headers });
+
+        case constant.apiLabel.recipelist:
+            url = `${process.env.REACT_APP_APIURL}/recipe?page=${payload.page}&searchKey=${payload.query || ''}&ratingValue=${payload.rating}&preparationTime=${payload.prepTime}&cookingTime=${payload.cookTime}`;
+            return await axios.get(url, { headers });
+
+        case constant.apiLabel.myRecipe:
+            url = payload.location === constant.label.myRecipe 
+                ? `${process.env.REACT_APP_APIURL}/recipe?limit=20&creator=${payload.userId}&page=${payload.page}&searchKey=${payload.query}&ratingValue=${payload.rating}&preparationTime=${payload.prepTime}&cookingTime=${payload.cookTime}` 
+                : `${process.env.REACT_APP_APIURL}/favorites?limit=20&page=${payload.page}&searchKey=${payload.query}&ratingValue=${payload.rating}&preparationTime=${payload.prepTime}&cookingTime=${payload.cookTime}`;
+            return await axios.get(url, { headers });
+
+        case constant.apiLabel.oneRecipe:
+            url = `${process.env.REACT_APP_APIURL}/recipe?_id=${payload.id}`;
+            return await axios.get(url, { headers });
+
+        case constant.apiLabel.addRating:
+            url = `${process.env.REACT_APP_APIURL}/recipefeedback`;
+            return await axios.post(url, payload, { headers });
+
+        case constant.apiLabel.savedRecipe:
+            url = `${process.env.REACT_APP_APIURL}/user?recipeId=${payload.recipeId}&add=${payload.add}`;
+            return await axios.get(url, { headers });
+
+        case constant.apiLabel.forgotPassword:
+            url = `${process.env.REACT_APP_APIURL}/password/sendEmail`;
+            return await axios.post(url, payload, { headers: { 'Content-Type': 'application/json' } });
+
+        case constant.apiLabel.passwordConfirmation:
+            url = `${process.env.REACT_APP_APIURL}/password/verify`;
+            return await axios.post(url, payload, { headers: { 'Content-Type': 'application/json' } });
+
+        case constant.apiLabel.followClick:
+            url = `${process.env.REACT_APP_APIURL}/follow`;
+            return await axios.post(url, payload, { headers });
+
+        case constant.apiLabel.userProfile:
+            url = `${process.env.REACT_APP_APIURL}/user?${new URLSearchParams(payload.pathMap).toString()}&limit=20&page=${payload.page}&searchKey=${payload.searchKey}`;
+            return await axios.get(url, { headers });
+
+        case constant.apiLabel.recipeImage:
+            url = `${process.env.REACT_APP_APIURL}/getS3Url`;
+            return await axios.post(url, payload, { headers: { 'Content-Type': 'application/json' } });
+
+        case constant.apiLabel.addRecipe:
+            url = `${process.env.REACT_APP_APIURL}/recipe`;
+            return await axios.post(url, payload, { headers });
+
+        case constant.apiLabel.oneUser:
+            url = `${process.env.REACT_APP_APIURL}/user?_id=${payload.userId}`;
+            return await axios.get(url, { headers });
+
+        case constant.apiLabel.updateUserProfile:
+            url = `${process.env.REACT_APP_APIURL}/update`;
+            return await axios.put(url, payload, { headers });
+
+        case constant.apiLabel.message:
+            url = `${process.env.REACT_APP_APIURL}/send`;
+            return await axios.post(url, payload, { headers });
+
+        case constant.apiLabel.getChat:
+            url = `${process.env.REACT_APP_APIURL}/chat/${payload.sender}/${payload.receiver}`;
+            return await axios.get(url, { headers });
+
+        default:
+            throw new Error('Invalid API call');
     }
-    return response;
 };

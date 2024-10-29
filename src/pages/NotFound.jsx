@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Text, Button } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import constant from '../utils/constant.js';
+import ErrorBoundary from '../components/ErrorBoundary.jsx';
 
 const NotFound = () => {
     const navigate = useNavigate();
@@ -26,4 +27,10 @@ const NotFound = () => {
     );
 };
 
-export default NotFound;
+const NotFoundWithErrorBoundary = () => (
+    <ErrorBoundary>
+        <NotFound />
+    </ErrorBoundary>
+);
+
+export default NotFoundWithErrorBoundary;

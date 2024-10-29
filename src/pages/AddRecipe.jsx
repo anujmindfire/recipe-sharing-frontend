@@ -3,10 +3,12 @@ import Input from '../components/Input.jsx';
 import Button from '../components/Button.jsx';
 import Validation from '../components/Validation.jsx';
 import Snackbar from '../components/Snackbar.jsx';
+import ErrorBoundary from '../components/ErrorBoundary.jsx';
 import styles from '../styles/AddRecipe.module.css';
 import { validateField, createHandleChange } from '../validation/validation.js';
 import { apiService } from '../apiService/services.js';
 import constant from '../utils/constant.js';
+import withAuthentication from '../utils/withAuthenicate.js';
 
 const initialState = {
     recipeTitle: '',
@@ -102,7 +104,7 @@ const AddRecipe = () => {
             userId
         };
 
-        setFormData((prevData) => ({ ...prevData, isSubmitting: true }));
+        setFormData((prevData) => ({ ...prevData, isSubmitting: true, loading: true }));
 
         const result = await apiService(payload, constant.apiLabel.addRecipe)
         if (result.success) {
@@ -110,12 +112,14 @@ const AddRecipe = () => {
                 ...prevData,
                 successMessage: result.data.message,
                 showSnackbar: true,
+                loading: false
             }));
             setTimeout(() => window.location.reload(), 1000);
         } else {
             setFormData((prevData) => ({
                 ...prevData,
                 errorMessage: result.message,
+                loading: false
             }));
         }
     };
@@ -146,7 +150,7 @@ const AddRecipe = () => {
             <div style={{ marginTop: '10px' }}>
                 {formData.errors[constant.id] && (
                     <Validation
-                        error={`${constant.label} is required`}
+                        error={formData.errors[constant.id]}
                         show={true}
                     />
                 )}
@@ -156,8 +160,7 @@ const AddRecipe = () => {
 
     return (
         <main className={styles.container}>
-            <h2 className={styles.heading}>Create New Recipe</h2>
-            <hr className={styles.divider} />
+            <h2 className={styles.heading}> {constant.label.createRecipe}</h2>
             <form className={styles.form} onSubmit={handleCreateRecipe} noValidate>
                 {renderFormGroup(constant.inputLabel.recipeTitle)}
                 {renderFormGroup(constant.inputLabel.ingredients, true)}
@@ -176,6 +179,13 @@ const AddRecipe = () => {
                     </span>
                 </label>
 
+                {formData.errors.imageUrl && (
+                    <Validation
+                        error={formData.errors.imageUrl}
+                        show={true}
+                    />
+                )}
+
                 {renderFormGroup(constant.inputLabel.preparationTime)}
                 {renderFormGroup(constant.inputLabel.cookingTime)}
 
@@ -189,4 +199,10 @@ const AddRecipe = () => {
     );
 };
 
-export default AddRecipe;
+const AddRecipeWithErrorBoundary = () => (
+    <ErrorBoundary>
+        <AddRecipe />
+    </ErrorBoundary>
+);
+
+export default withAuthentication(AddRecipeWithErrorBoundary);

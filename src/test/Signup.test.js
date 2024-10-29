@@ -1,13 +1,13 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import SignUp from '../pages/Signup';
-import { apiService } from '../apiService/Services';
-import constant from '../utils/constant';
+import SignUp from '../pages/Signup.jsx';
+import { apiService } from '../apiService/services.js';
+import constant from '../utils/constant.js';
 import '@testing-library/jest-dom';
 
-jest.mock('../apiService/Services');
-jest.mock('../utils/commonFunction', () => ({
+jest.mock('../apiService/services.js');
+jest.mock('../utils/commonFunction.js', () => ({
     useClearLocalStorageAndRedirect: jest.fn(),
 }));
 
@@ -35,13 +35,16 @@ describe('SignUp Component', () => {
     
         fireEvent.click(screen.getByRole('button', { name: constant.label.signup }));
     
-        // Wait for validation messages to appear
         await waitFor(() => {
             expect(screen.getByText(constant.validationMessage.invalidName)).toBeInTheDocument();
+        });
+        await waitFor(() => {
             expect(screen.getByText(constant.validationMessage.invalidEmail)).toBeInTheDocument();
+        });
+        await waitFor(() => {
             expect(screen.getByText(constant.validationMessage.invalidPassword)).toBeInTheDocument();
         });
-    });
+    });     
 
     test('handles input changes correctly', () => {
         renderComponent();

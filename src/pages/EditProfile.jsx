@@ -4,9 +4,11 @@ import Button from '../components/Button.jsx';
 import Snackbar from '../components/Snackbar.jsx';
 import InputField from '../components/Input.jsx';
 import Validation from '../components/Validation.jsx';
+import ErrorBoundary from '../components/ErrorBoundary.jsx';
 import { validateField, createHandleChange } from '../validation/validation.js';
 import { apiService } from '../apiService/services.js';
 import constant from '../utils/constant.js';
+import withAuthentication from '../utils/withAuthenicate.js';
 
 const EditProfile = () => {
     const [formData, setFormData] = useState({
@@ -204,4 +206,10 @@ const EditProfile = () => {
     );
 };
 
-export default EditProfile;
+const EditProfileWithErrorBoundary = () => (
+    <ErrorBoundary>
+        <EditProfile />
+    </ErrorBoundary>
+);
+
+export default withAuthentication(EditProfileWithErrorBoundary)   

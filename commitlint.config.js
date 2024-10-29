@@ -1,4 +1,4 @@
-export default {
+const commitLintConfig = {
   extends: ['@commitlint/config-conventional'],
   rules: {
     'type-enum': [
@@ -16,3 +16,5 @@ export default {
     'footer-empty': [0, 'always'],
   },
 };
+
+export default commitLintConfig;

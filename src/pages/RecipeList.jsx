@@ -5,6 +5,7 @@ import SearchFilterBar from '../components/SearchFilterBar.jsx';
 import withAuthentication from '../utils/withAuthenicate.js';
 import Loader from '../components/Loader.jsx';
 import ErrorModal from '../components/ErrorModal.jsx';
+import ErrorBoundary from '../components/ErrorBoundary.jsx';
 import { apiService } from '../apiService/services.js';
 import constant from '../utils/constant.js';
 import { sortTimes, handleModalClose, handleInputChange } from '../utils/commonFunction.js';
@@ -108,4 +109,10 @@ const RecipeList = () => {
     );
 };
 
-export default withAuthentication(RecipeList);
+const RecipeListWithErrorBoundary = () => (
+    <ErrorBoundary>
+        <RecipeList />
+    </ErrorBoundary>
+);
+
+export default withAuthentication(RecipeListWithErrorBoundary);

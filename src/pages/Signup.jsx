@@ -4,6 +4,7 @@ import styles from '../styles/Form.module.css';
 import Input from '../components/Input.jsx';
 import Button from '../components/Button.jsx';
 import Validation from '../components/Validation.jsx';
+import ErrorBoundary from '../components/ErrorBoundary.jsx';
 import { validateField, createHandleChange } from '../validation/validation.js';
 import { apiService } from '../apiService/services.js';
 import constant from '../utils/constant.js';
@@ -112,4 +113,10 @@ const SignUp = () => {
     );
 };
 
-export default SignUp;
+const SignUpWithErrorBoundary = () => (
+    <ErrorBoundary>
+        <SignUp />
+    </ErrorBoundary>
+);
+
+export default SignUpWithErrorBoundary;

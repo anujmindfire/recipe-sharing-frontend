@@ -4,6 +4,7 @@ import styles from '../styles/OTP.module.css';
 import Snackbar from '../components/Snackbar.jsx';
 import Button from '../components/Button.jsx';
 import Validation from '../components/Validation.jsx';
+import ErrorBoundary from '../components/ErrorBoundary.jsx';
 
 const OTP = () => {
     const [otp, setOtp] = useState(new Array(6).fill(''));
@@ -198,4 +199,10 @@ const OTP = () => {
     );
 };
 
-export default OTP;
+const OTPWithErrorBoundary = () => (
+    <ErrorBoundary>
+        <OTP />
+    </ErrorBoundary>
+);
+
+export default OTPWithErrorBoundary;

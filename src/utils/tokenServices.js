@@ -1,26 +1,30 @@
+import axios from 'axios';
 import constant from './constant.js';
 
 export const refreshAccessToken = async (refreshtoken, userId) => {
     try {
-        const response = await fetch(`${process.env.REACT_APP_APIURL}/auth/refreshtoken`, {
-            method: constant.apiMethod.POST,
-            headers: {
-                'Content-Type': 'application/json',
-                refreshtoken,
-                id: userId,
-            },
-        });
+        const response = await axios.post(
+            `${process.env.REACT_APP_APIURL}/auth/refreshtoken`,
+            {},
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    refreshtoken,
+                    id: userId,
+                },
+            }
+        );
 
-        const data = await response.json();
+        const { data, status } = response;
 
-        if (!response.ok && response.status === constant.statusCode.unAuthorized && data.logout) {
+        if (status === constant.statusCode.unAuthorized && data.logout) {
             clearLocalStorage();
             window.location.href = constant.routes.signIn;
             return null;
-        } else if (response.ok && response.status === constant.statusCode.success) {
+        } else if (status === constant.statusCode.success) {
             constant.localStorageUtils.setItem(constant.localStorageKeys.accessToken, data.accessToken);
             return data.accessToken;
-        } else if (!response.ok && response.status === constant.statusCode.unAuthorized && data.signout) {
+        } else if (status === constant.statusCode.unAuthorized && data.signout) {
             clearLocalStorage();
             window.location.href = constant.routes.signIn;
             return null;

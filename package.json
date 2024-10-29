@@ -5,6 +5,7 @@
   "type": "module",
   "dependencies": {
     "@babel/eslint-parser": "^7.25.9",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/preset-env": "^7.26.0",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
@@ -19,6 +20,7 @@
     "@reduxjs/toolkit": "^2.2.7",
     "@testing-library/jest-dom": "^6.6.2",
     "@testing-library/react": "^16.0.1",
+    "axios": "^1.7.7",
     "babel-jest": "^29.7.0",
     "commitlint": "^19.5.0",
     "dompurify": "^3.1.6",
@@ -59,7 +61,11 @@
       "eslint --fix",
       "prettier --write"
     ],
-    "*.md": [
+    "*.jsx": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.json": [
       "prettier --write"
     ]
   },
@@ -67,6 +73,17 @@
     "extends": [
       "react-app",
       "react-app/jest"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "*.js",
+          "*.jsx"
+        ],
+        "rules": {
+          "no-console": "warn"
+        }
+      }
     ]
   },
   "browserslist": {

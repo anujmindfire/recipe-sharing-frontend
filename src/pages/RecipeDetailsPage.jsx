@@ -8,6 +8,7 @@ import Validation from '../components/Validation.jsx';
 import Loader from '../components/Loader.jsx';
 import ShareModal from '../components/ShareModal.jsx';
 import ErrorModal from '../components/ErrorModal.jsx';
+import ErrorBoundary from '../components/ErrorBoundary.jsx';
 import withAuthentication from '../utils/withAuthenicate.js';
 import { apiService } from '../apiService/services.js';
 import constant from '../utils/constant.js';
@@ -174,7 +175,7 @@ const RecipeDetailsPage = () => {
 
 
                         <section className={styles.recipeSteps}>
-                            <h3 className={styles.stepsTitle}>{constant.label.steps}</h3>
+                            <h3 className={styles.stepTitle}>{constant.label.steps}</h3>
                             {status.recipe?.recipe?.steps.map((step, index) => (
                                 <div key={index} className={styles.stepItem}>
                                     <h4 className={styles.stepTitle}>{constant.label.step}{index + 1}</h4>
@@ -193,7 +194,7 @@ const RecipeDetailsPage = () => {
                                         </span>
                                     ))}
                                 </div>
-                                <p className={styles.reviewCount}>{status.recipe.totalRating}{constant.label.review}</p>
+                                <p className={styles.reviewCount}>{status.recipe.totalRating} {constant.label.review}</p>
                             </div>
                             <div className={styles.ratingDistribution}>
                                 {Array.from({ length: 5 }, (_, index) => {
@@ -288,4 +289,10 @@ const RecipeDetailsPage = () => {
     );
 };
 
-export default withAuthentication(RecipeDetailsPage);
+const RecipeDetailsWithErrorBoundary = () => (
+    <ErrorBoundary>
+        <RecipeDetailsPage />
+    </ErrorBoundary>
+);
+
+export default withAuthentication(RecipeDetailsWithErrorBoundary);

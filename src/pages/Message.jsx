@@ -4,6 +4,7 @@ import Loader from '../components/Loader.jsx';
 import io from 'socket.io-client';
 import constant from '../utils/constant.js';
 import { apiService } from '../apiService/services.js';
+import withAuthentication from '../utils/withAuthenicate.js';
 
 const Message = ({ sender, receiver, receiverName }) => {
     const [messages, setMessages] = useState([]);
@@ -139,4 +140,4 @@ const Message = ({ sender, receiver, receiverName }) => {
     );
 };
 
-export default Message;
+export default withAuthentication(Message);

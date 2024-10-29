@@ -4,59 +4,59 @@ import constant from '../utils/constant.js';
 
 const validateField = (name, value, formData) => {
     switch (name) {
-        case 'name':
+        case constant.inputLabel.name.id:
             return !regex.auth.name.test(value)
-                ? `${constant.validationMessage.invalidName}`
-                : value.length < 2 || value.length > 50
-                    ? `${constant.validationMessage.invalidLength}`
+                ? constant.validationMessage.invalidName
+                : value.length < constant.inputLabel.name.minLength || value.length > constant.inputLabel.name.maxLength
+                    ? constant.validationMessage.invalidLength
                     : '';
-        case 'email':
+        case constant.inputLabel.email.type:
             return !regex.auth.email.test(value)
-                ? `${constant.validationMessage.invalidEmail}`
+                ? constant.validationMessage.invalidEmail
                 : '';
-        case 'password':
-            return value.length === 0 || !regex.auth.password.test(value)
-                ? `${constant.validationMessage.invalidPassword}`
+        case constant.inputLabel.password.type:
+            return value.length === constant.inputLabel.password.length || !regex.auth.password.test(value)
+                ? constant.validationMessage.invalidPassword
                 : '';
-        case 'confirmPassword':
+        case constant.inputLabel.confirmPassword.type:
             return value !== formData.password
-                ? `${constant.validationMessage.invalidConfirmPassword}`
+                ? constant.validationMessage.invalidConfirmPassword
                 : '';
-        case 'recipeTitle':
-            return value.length < 1
-                ? 'Recipe title is required.'
-                : value.length > 100
-                    ? 'Recipe title is too long.'
-                    : '';
-        case 'ingredients':
-            return value.length < 1
-                ? 'Ingredients are required.'
+        case constant.inputLabel.recipeTitle.id:
+            if (value.length < constant.inputLabel.recipeTitle.minLength) {
+                return constant.validationMessage.required(constant.inputLabel.recipeTitle.label);
+            } else if (value.length > constant.inputLabel.recipeTitle.maxLength) {
+                return constant.validationMessage.tooLong(constant.inputLabel.recipeTitle.label, constant.inputLabel.recipeTitle.maxLength);
+            }
+            return '';
+        case constant.inputLabel.ingredients.id:
+            return value.length < constant.inputLabel.recipeTitle.minLength
+                ? constant.validationMessage.required(constant.inputLabel.ingredients.label)
                 : '';
-        case 'preparationSteps':
-            return value.length < 1
-                ? 'Preparation steps are required.'
+        case constant.inputLabel.preparationSteps.id:
+            return value.length < constant.inputLabel.recipeTitle.minLength
+                ? constant.validationMessage.required(constant.inputLabel.preparationSteps.label)
                 : '';
-        case 'preparationTime':
-            return value.length < 1
-                ? 'Preparation time is required.'
+        case constant.inputLabel.preparationTime.id:
+            return value.length < constant.inputLabel.recipeTitle.minLength
+                ? constant.validationMessage.required(constant.inputLabel.preparationTime.label)
                 : '';
-        case 'cookingTime':
-            return value.length < 1
-                ? 'Cooking time is required.'
+        case constant.inputLabel.cookingTime.id:
+            return value.length < constant.inputLabel.recipeTitle.minLength
+                ? constant.validationMessage.required(constant.inputLabel.cookingTime.label)
                 : '';
-        case 'imageUrl':
-            return value.length < 1
-                ? 'Image is required.'
+        case constant.inputLabel.imageUrl.id:
+            return value.length < constant.inputLabel.recipeTitle.minLength
+                ? constant.validationMessage.required(constant.inputLabel.imageUrl.name)
                 : '';
-        case 'bio':
-            return value.length > 500
-                ? 'Bio is too long.'
+        case constant.inputLabel.bio.name:
+            return value.length > constant.inputLabel.bio.maxLength
+                ? constant.validationMessage.tooLong(constant.inputLabel.bio.label, 500)
                 : '';
-        case 'favouriteRecipe':
-            return value.length > 100
-                ? 'Recipe name is too long.'
+        case constant.inputLabel.favouriteRecipe.name:
+            return value.length > constant.inputLabel.recipeTitle.maxLength
+                ? constant.validationMessage.tooLong(constant.inputLabel.favouriteRecipe.label, 100)
                 : '';
-
         default:
             return '';
     }

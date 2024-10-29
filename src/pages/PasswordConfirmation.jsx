@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Input from '../components/Input.jsx';
 import Snackbar from '../components/Snackbar.jsx';
 import Validation from '../components/Validation.jsx';
+import ErrorBoundary from '../components/ErrorBoundary.jsx';
 import Button from '../components/Button.jsx';
 import styles from '../styles/Form.module.css';
 import { validateField, createHandleChange } from '../validation/validation.js';
@@ -145,4 +146,10 @@ const PasswordConfirmation = () => {
     );
 };
 
-export default PasswordConfirmation;
+const PasswordConfirmationWithErrorBoundary = () => (
+    <ErrorBoundary>
+        <PasswordConfirmation />
+    </ErrorBoundary>
+);
+
+export default PasswordConfirmationWithErrorBoundary;

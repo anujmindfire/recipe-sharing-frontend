@@ -1,13 +1,13 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import SignIn from '../pages/Signin';
-import { apiService } from '../apiService/Services';
-import constant from '../utils/constant';
+import SignIn from '../pages/Signin.jsx';
+import { apiService } from '../apiService/services.js';
+import constant from '../utils/constant.js';
 import '@testing-library/jest-dom';
 
-jest.mock('../apiService/Services');
-jest.mock('../utils/commonFunction', () => ({
+jest.mock('../apiService/services.js');
+jest.mock('../utils/commonFunction.js', () => ({
     useClearLocalStorageAndRedirect: jest.fn(),
 }));
 
@@ -33,15 +33,17 @@ describe('SignIn Component', () => {
 
     test('shows validation errors on empty submit', async () => {
         renderComponent();
-
+    
         fireEvent.click(screen.getByRole('button', { name: constant.label.continue }));
-
+    
         // Wait for validation messages to appear
         await waitFor(() => {
             expect(screen.getByText(constant.validationMessage.invalidEmail)).toBeInTheDocument();
+        });
+        await waitFor(() => {
             expect(screen.getByText(constant.validationMessage.invalidPassword)).toBeInTheDocument();
         });
-    });
+    });    
 
     test('handles input changes correctly', () => {
         renderComponent();
@@ -65,7 +67,7 @@ describe('SignIn Component', () => {
                 accessToken: 'access_token',
                 refreshToken: 'refresh_token',
                 data: {
-                    userId: 'user_id', // Ensure this matches your actual response structure
+                    userId: 'user_id',
                     name: 'User Name'
                 }
             },

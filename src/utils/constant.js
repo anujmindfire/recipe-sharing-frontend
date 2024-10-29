@@ -3,7 +3,9 @@ const constant = {
         name: {
             type: 'text',
             label: 'Full Name',
-            id: 'name'
+            id: 'name',
+            minLength: 2,
+            maxLength: 50
         },
         email: {
             type: 'email',
@@ -11,7 +13,8 @@ const constant = {
         },
         password: {
             type: 'password',
-            label: 'Password'
+            label: 'Password',
+            length: 0
         },
         confirmPassword: {
             type: 'confirmPassword',
@@ -21,7 +24,9 @@ const constant = {
             id: 'recipeTitle',
             type: 'text',
             label: 'Recipe Title',
-            placeholder: 'Enter the title of your recipe'
+            placeholder: 'Enter the title of your recipe',
+            minLength: 2,
+            maxLength: 100
         },
         ingredients: {
             id: 'ingredients',
@@ -57,12 +62,14 @@ const constant = {
             id: 'imageUrl',
             type: 'file',
             label: 'Upload Image',
-            placeholder: 'Choose Image'
+            placeholder: 'Choose Image',
+            name: 'Image'
         },
         bio: {
             type: 'textarea',
             label: 'Bio',
-            name: 'bio'
+            name: 'bio',
+            maxLength: 500
         },
         favouriteRecipe: {
             type: 'text',
@@ -113,6 +120,7 @@ const constant = {
         noAvailNoti: 'No notifications available.',
         deleteNoti: 'Delete Notification',
         addRecipe: 'Add Recipe',
+        addNew: 'Add New',
         myRecipe: 'My Recipes',
         myFavo: 'My Favorites',
         following: 'Following',
@@ -146,7 +154,8 @@ const constant = {
         verify: 'Verify',
         enterOtp: 'Enter OTP',
         digit: '2-digit',
-        send: 'Send'
+        send: 'Send',
+        createRecipe: 'Create New Recipe'
     },
     searchLabel: {
         recipe: 'Search Recipes...',
@@ -158,15 +167,17 @@ const constant = {
     validationMessage: {
         invalidEmail: 'Please enter a valid email address.',
         invalidPassword: 'Password must be 8-50 characters long, with at least one number, uppercase letter, lowercase letter, and special character.',
-        invalidConfirmPassword: 'Confirm Password must be same',
+        invalidConfirmPassword: 'Confirm Password must be the same.',
         invalidName: 'Name can only contain letters and spaces.',
         invalidLength: 'Name should be greater than 2 and less than 50 characters.',
         invalidFeedback: 'Please provide both a rating and a comment.',
-        linkExpired: 'Link has expired',
+        linkExpired: 'Link has expired.',
         invalidImage: 'Invalid file type. Please select a JPEG or PNG image.',
-        inValidOTP: 'Please enter all 6 digits',
-        invalidDate: 'Invalid date'
-    },
+        inValidOTP: 'Please enter all 6 digits.',
+        invalidDate: 'Invalid date.',
+        required: (field) => `${field} is required.`,
+        tooLong: (field, max) => `${field} cannot exceed ${max} characters.`
+    },    
     routes: {
         signIn: '/signin',
         signUp: '/signup',
@@ -232,7 +243,7 @@ const constant = {
     },
     statusCode: {
         unAuthorized: 401,
-        success: 200
+        success: 200,
     },
     dropdownKeys: {
         rating: 'rating',

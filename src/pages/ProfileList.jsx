@@ -4,6 +4,7 @@ import Loader from '../components/Loader.jsx';
 import ErrorModal from '../components/ErrorModal.jsx';
 import Snackbar from '../components/Snackbar.jsx';
 import SearchFilterBar from '../components/SearchFilterBar.jsx';
+import ErrorBoundary from '../components/ErrorBoundary.jsx';
 import { useLocation } from 'react-router-dom';
 import withAuthentication from '../utils/withAuthenicate.js';
 import constant from '../utils/constant.js';
@@ -215,4 +216,10 @@ const ProfileList = () => {
     );
 };
 
-export default withAuthentication(ProfileList);
+const ProfileListWithErrorBoundary = () => (
+    <ErrorBoundary>
+        <ProfileList />
+    </ErrorBoundary>
+);
+
+export default withAuthentication(ProfileListWithErrorBoundary);

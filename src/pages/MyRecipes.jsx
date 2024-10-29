@@ -5,16 +5,18 @@ import Loader from '../components/Loader.jsx';
 import ErrorModal from '../components/ErrorModal.jsx';
 import Modal from '../components/Modal.jsx';
 import AddRecipe from './AddRecipe.jsx';
+import ErrorBoundary from '../components/ErrorBoundary.jsx';
 import withAuthentication from '../utils/withAuthenicate.js';
 import { useLocation } from 'react-router-dom';
 import styles from '../styles/ProfilePage.module.css';
 import constant from '../utils/constant.js';
 import { handleInputChange, handleModalClose, sortTimes, useScrollPagination } from '../utils/commonFunction.js';
 import { apiService } from '../apiService/services.js';
+import Button from '../components/Button.jsx';
 
 const MyRecipe = () => {
     const [isAddRecipeModalVisible, setAddRecipeModalVisible] = useState(false);
-    
+
     const initialSearchParams = useMemo(() => ({
         query: '',
         rating: '',
@@ -89,10 +91,12 @@ const MyRecipe = () => {
                 uniqueCookTimes={allUniqueCookTimes}
                 placeholder={constant.searchLabel.recipe}
             />
-
-            <button className={styles.addButton} onClick={() => setAddRecipeModalVisible(true)}>
-                Add New
-            </button>
+            
+            {location.pathname === constant.routes.myRecipe && (
+                <Button className={styles.addButton} type={constant.buttonType.submit} onClick={() => setAddRecipeModalVisible(true)}>
+                    {constant.label.addNew}
+                </Button>
+            )}
 
             {loading && !notFound && <Loader />}
             {notFound && <p className={styles.noDataMessage}>{constant.label.noRecipeFound}</p>}
@@ -106,4 +110,10 @@ const MyRecipe = () => {
     );
 };
 
-export default withAuthentication(MyRecipe);
+const MyRecipeWithErrorBoundary = () => (
+    <ErrorBoundary>
+        <MyRecipe />
+    </ErrorBoundary>
+);
+
+export default withAuthentication(MyRecipeWithErrorBoundary);
