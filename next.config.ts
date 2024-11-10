@@ -1,7 +1,10 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    domains: ['cdn.builder.io', 'x.yummlystatic.com'],
+    dangerouslyAllowSVG: true,
+  },
 };
 
-export default nextConfig;
+export default nextConfig

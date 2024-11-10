@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Recipe Sharing Application
 
-## Getting Started
+## Description
+The Recipe Sharing Application is a platform that allows users to share, discover, and manage various recipes. Users can search for recipes, filter them based on different criteria, and share their own creations with the community.
 
-First, run the development server:
+## Table of Contents
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contribution Guidelines](#contribution-guidelines)
+- [Changelog](#changelog)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Installation
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Frontend Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/anujmindfire/recipe-sharing-frontend.git
+   cd recipe-sharing-frontend
+   
+2. **Install backend dependencies:**
+   ```bash
+   npm install
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. **Set up environment variables: Create a .env file in the root directory with the following content:**
+   ```bash
+   APIURL=<APIURL>
 
-## Learn More
+4. **Start the frontend App::**
+   ```bash
+   npm run start
 
-To learn more about Next.js, take a look at the following resources:
+The frontend should now be accessible at http://localhost:3000.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Usage
+Once both the backend and frontend servers are running, you can start activities in app.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Contribution Guidelines
+We welcome contributions to improve and expand the functionality of the Recipe Sharing Application. Please follow these guidelines:
 
-## Deploy on Vercel
+Fork the repository and create a new branch with a descriptive name.
+Make your changes and ensure that your code adheres to the project's style guidelines.
+Write tests for any new functionality and ensure all existing tests pass.
+Submit a pull request with a clear description of your changes and the problem they solve.
+Review feedback: Be responsive to any feedback provided during the review process.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Changelog
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+All notable changes to this project will be documented in this section.
+
+v1.0.0 - Initial Release
+Initial setup of the backend with user authentication and recipe management.
+Basic CRUD functionality for recipes.
+Filtering and searching recipes.
+Initial setup for email notifications and AWS S3 image storage.
+
+v1.0.1 - Initial Changes
+Adding Constant all message.
+Adding Custom validation for form validation.
+Adding test cases.
