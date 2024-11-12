@@ -1,17 +1,22 @@
-import winston from 'winston';
+import log from 'loglevel';
 
-// Create a Winston logger
-const logger = winston.createLogger({
-    level: 'info',
-    format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json()
-    ),
-    transports: [
-        new winston.transports.Console(),
-        new winston.transports.File({ filename: 'combined.log' }),
-        new winston.transports.File({ filename: 'error.log', level: 'error' })
-    ]
-});
+if (process.env.NODE_ENV === 'production') {
+    log.setLevel('error');
+} else {
+    log.setLevel('debug');
+}
 
-export default logger;
+if (typeof window !== 'undefined') {
+    log.methodFactory = (methodName, level, loggerName) => {
+        const originalMethod = log.methodFactory(methodName, level, loggerName);
+
+        return (...args: any[]) => {
+            if (level) {
+                console.error(`Remote logging for errors: ${methodName}`, ...args);
+            }
+            originalMethod(...args);
+        };
+    };
+}
+
+export default log;

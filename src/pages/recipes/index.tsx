@@ -16,16 +16,15 @@ import constant from '../../utils/constant';
 const { Content } = Layout;
 
 const RecipeList = () => {
-
     const dispatch = useDispatch();
     const { recipes, totalPages, page, loading, allUniquePrepTimes, allUniqueCookTimes, errorMessage, showErrorModal, searchParams, notFound } = useSelector((state: RootState) => state.recipeList);
-    
-    const initialSearchParams = useMemo(() => ({
+
+    const memoizedSearchParams = useMemo(() => ({
         query: searchParams.query,
         rating: searchParams.rating,
         prepTime: searchParams.prepTime,
         cookTime: searchParams.cookTime,
-    }), []);
+    }), [searchParams]);
 
     const accesstoken = typeof window !== 'undefined' ? localStorage.getItem(constant.localStorageKeys.accessToken) : null;
     const userId = typeof window !== 'undefined' ? localStorage.getItem(constant.localStorageKeys.userId) : null;
@@ -36,7 +35,10 @@ const RecipeList = () => {
 
         const payload = {
             page,
-            initialSearchParams,
+            query: memoizedSearchParams.query,
+            rating: memoizedSearchParams.rating,
+            prepTime: memoizedSearchParams.prepTime,
+            cookTime: memoizedSearchParams.cookTime,
             accesstoken,
             userId,
         };
@@ -55,11 +57,11 @@ const RecipeList = () => {
         }
 
         dispatch(setLoading(false));
-    }, [page, searchParams, accesstoken, userId, dispatch]);
+    }, [page, memoizedSearchParams, accesstoken, userId, dispatch, recipes]);
 
     useEffect(() => {
         fetchRecipes();
-    }, [page, searchParams, fetchRecipes]);
+    }, [page, searchParams]);
 
     useEffect(() => {
         const handleScroll = () => {
