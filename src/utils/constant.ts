@@ -169,6 +169,7 @@ const constant = {
     },
     general: {
         serverError: 'Unable to connect to the server. Please check your internet connection.',
+        somethingWentWrong: 'Something went wrong'
     },
     validationMessage: {
         invalidEmail: 'Please enter a valid email address.',
@@ -305,6 +306,37 @@ const constant = {
         png: 'image/png',
         file: 'file',
         accept: 'image/*'
+    },
+    signInTest: {
+        components: 'SignIn Component',
+        renderComponent: 'renders the component',
+        handleInput: 'handles input changes for email and password',
+        validError: 'shows validation error if fields are empty on form submission',
+        showError: 'shows validation error for invalid email format',
+        success: 'submits the form successfully and redirects',
+        apiFail: 'shows error message when API call fails',
+        mockData: {
+            email: 'test@example.com',
+            password: 'Password123@!!',
+            invalidPassword: 'aaa'
+        },
+        successResponse: {
+            accessToken: 'mockAccessToken',
+            refreshToken: 'mockRefreshToken',
+            data: { userId: '123', name: 'John Doe' },
+        },
+    },
+    signUpTest: {
+        components: 'SignUp Component',
+        handleInput: 'handles input changes for name, email and password',
+        mockData: {
+            name: 'example'
+        },
+        successResponse: {
+            accessToken: 'mockAccessToken',
+            refreshToken: 'mockRefreshToken',
+            data: { userId: '123', name: 'John Doe' },
+        },
     }
 };
 

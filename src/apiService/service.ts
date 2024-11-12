@@ -43,6 +43,7 @@ export const apiCalls = async (payload: Payload, keys: string) => {
         'Content-Type': 'application/json',
         accesstoken: localStorage.getItem(constant.localStorageKeys.accessToken),
         id: localStorage.getItem(constant.localStorageKeys.userId),
+        'Cache-Control': 'no-cache',
     };
 
     switch (keys) {
@@ -68,16 +69,19 @@ export const apiCalls = async (payload: Payload, keys: string) => {
 
         case constant.apiLabel.recipelist:
             url = `${process.env.NEXT_PUBLIC_API_URL}/recipe?page=${payload.page}&searchKey=${payload.query || '&limit=20'}&ratingValue=${payload.rating}&preparationTime=${payload.prepTime}&cookingTime=${payload.cookTime}`;
+            headers['Cache-Control'] = 'public, max-age=300';
             return await axios.get(url, { headers });
 
         case constant.apiLabel.myRecipe:
             url = payload.location === constant.label.myRecipe
                 ? `${process.env.NEXT_PUBLIC_API_URL}/recipe?limit=20&creator=${payload.userId}&page=${payload.page}&searchKey=${payload.query}&ratingValue=${payload.rating}&preparationTime=${payload.prepTime}&cookingTime=${payload.cookTime}`
                 : `${process.env.NEXT_PUBLIC_API_URL}/favorites?limit=20&page=${payload.page}&searchKey=${payload.query}&ratingValue=${payload.rating}&preparationTime=${payload.prepTime}&cookingTime=${payload.cookTime}`;
+            headers['Cache-Control'] = 'public, max-age=300'; 
             return await axios.get(url, { headers });
 
         case constant.apiLabel.oneRecipe:
             url = `${process.env.NEXT_PUBLIC_API_URL}/recipe?_id=${payload.id}`;
+            headers['Cache-Control'] = 'public, max-age=300';
             return await axios.get(url, { headers });
 
         case constant.apiLabel.addRating:
@@ -102,6 +106,7 @@ export const apiCalls = async (payload: Payload, keys: string) => {
 
         case constant.apiLabel.userProfile:
             url = `${process.env.NEXT_PUBLIC_API_URL}/user?${new URLSearchParams(payload.pathMap).toString()}&limit=20&page=${payload.page}&searchKey=${payload.searchKey}`;
+            headers['Cache-Control'] = 'public, max-age=300'; 
             return await axios.get(url, { headers });
 
         case constant.apiLabel.recipeImage:

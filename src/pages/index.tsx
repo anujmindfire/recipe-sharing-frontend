@@ -1,7 +1,8 @@
 import React, { useEffect, Suspense, lazy } from 'react';
 import { useRouter } from 'next/router';
 import constant from '../utils/constant';
-import Loader from '../components/Loader'
+import Loader from '../components/Loader';
+
 const SignIn = lazy(() => import('./signin'));
 const SignUp = lazy(() => import('./signup'));
 const OTPVerify = lazy(() => import('./otpverify'));
@@ -11,6 +12,11 @@ const RecipeList = lazy(() => import('./recipes/index'));
 const RecipeDetails = lazy(() => import('./recipes/[id]'));
 const MyRecipe = lazy(() => import('../pages/profile/recipes'));
 const FavouriteRecipe = lazy(() => import('../pages/profile/favourites'));
+const AddRecipe = lazy(() => import('../pages/profile/addRecipe'));
+const EditProfile = lazy(() => import('../pages/profile/edit'));
+const Following = lazy(() => import('../pages/profile/following'));
+const Follower = lazy(() => import('../pages/profile/follower'));
+const UserList = lazy(() => import('../pages/profile/list'));
 
 const Index = () => {
     const router = useRouter();
@@ -30,6 +36,11 @@ const Index = () => {
             <RecipeDetails />
             <MyRecipe />
             <FavouriteRecipe />
+            <AddRecipe />
+            <EditProfile />
+            <Following />
+            <Follower />
+            <UserList />
         </Suspense>
     );
 };

@@ -7,6 +7,10 @@ import otpVerifyReducer from '../context/otpSlice';
 import recipeListReducer from '../context/recpieListSlice';
 import recipeDetailsReducer from '../context/recipeDetailsSlice';
 import addRecipeReducer from '../context/appRecipeSlice';
+import profileListReducer from '../context/profileListSlice';
+import editProfileReducer from '../context/editProfileSlice';
+import messageReducer from '../context/messageSlice';
+import { ThunkAction, Action } from '@reduxjs/toolkit';
 
 const store = configureStore({
     reducer: {
@@ -17,11 +21,21 @@ const store = configureStore({
         otpVerify: otpVerifyReducer,
         recipeList: recipeListReducer,
         recipeDetails: recipeDetailsReducer,
-        addRecipe: addRecipeReducer
+        addRecipe: addRecipeReducer,
+        profileList: profileListReducer,
+        editProfile: editProfileReducer,
+        message: messageReducer
     },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: {
+                ignoredActions: ['messageSlice/setMessage'],
+            },
+        }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, Action<string>>;
 
 export default store;

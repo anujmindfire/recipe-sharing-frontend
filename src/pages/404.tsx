@@ -8,7 +8,13 @@ const NotFound = () => {
     const router = useRouter();
 
     const handleGoBackHome = () => {
-        router.push(constant.routes.signIn);
+        const accesstoken = typeof window !== 'undefined' ? localStorage.getItem(constant.localStorageKeys.accessToken) : null;
+
+        if (accesstoken) {
+            router.push('/recipes');
+        } else {
+            router.push(constant.routes.signIn);
+        }
     };
 
     return (

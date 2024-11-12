@@ -17,4 +17,4 @@ const commitLintConfig = {
   },
 };
 
-module.exports = commitLintConfig;
+export default commitLintConfig;

@@ -1,10 +1,3 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
-import { RootState } from '../../store/redux/store';
-import { setRecipes, setTotalPages, setPage, setLoading, setUniquePrepTimes, setUniqueCookTimes, setErrorMessage, setShowErrorModal, setNotFound, setSearchParams } from '../../store/context/recpieListSlice';
-import { handleModalClose, sortTimes } from '../../utils/commonFunction';
-import { apiService } from '../../apiService/service';
 import Modal from '../../components/Model';
 import RecipeCard from '../../components/RecipeCard';
 import ProfileLayout from './index';
@@ -16,6 +9,13 @@ import ErrorBoundary from '../../components/ErrorBoundary';
 import Button from '../../components/Button';
 import constant from '../../utils/constant';
 import AddRecipe from './addRecipe';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
+import { RootState } from '../../store/redux/store';
+import { setRecipes, setTotalPages, setPage, setLoading, setUniquePrepTimes, setUniqueCookTimes, setErrorMessage, setShowErrorModal, setNotFound, setSearchParams } from '../../store/context/recpieListSlice';
+import { handleModalClose, sortTimes } from '../../utils/commonFunction';
+import { apiService } from '../../apiService/service';
 
 const MyRecipe = () => {
     const dispatch = useDispatch();
@@ -61,7 +61,7 @@ const MyRecipe = () => {
 
     useEffect(() => {
         fetchRecipes();
-    }, [page, searchParams, fetchRecipes]);
+    }, [page, searchParams]);
 
     useEffect(() => {
         const handleScroll = () => {

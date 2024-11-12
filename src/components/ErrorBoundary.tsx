@@ -1,10 +1,13 @@
 import React, { Component, ErrorInfo } from 'react';
 import { ErrorBoundaryProps, ErrorBoundaryState } from '../interface/Interface';
+import { Button } from 'antd';
+import { useRouter } from 'next/router';
+import constant from '../utils/constant';
 
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     constructor(props: ErrorBoundaryProps) {
         super(props);
-        this.state = { hasError: false };
+        this.state = { hasError: false, error: undefined };
     }
 
     static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
@@ -15,12 +18,30 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
         throw new Error('Error caught in ErrorBoundary:', error);
     }
 
+    renderErrorPage = () => {
+        const router = useRouter();
+
+        const handleGoBackHome = () => {
+            router.push(constant.routes.signIn);
+        };
+
+        return (
+            <div className='flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white text-center'>
+                <h1 className='text-5xl font-bold mb-4'>{constant.general.somethingWentWrong}</h1>
+                <p className='text-lg mb-8'>{this.state.error?.message || constant.general.serverError}</p>
+                <Button type='primary' onClick={handleGoBackHome}>
+                    {constant.label.backToHome}
+                </Button>
+            </div>
+        );
+    };
+
     render() {
         if (this.state.hasError) {
-            return <h1>Something went wrong. Please try again later.</h1>;
+            return this.renderErrorPage();
         }
 
-        return this.props.children; 
+        return this.props.children;
     }
 }
 

@@ -3,11 +3,11 @@ import { ReactNode } from 'react';
 export interface ButtonProps {
     children: ReactNode;
     onClick?: () => void;
-    type?: 'submit' | 'button' | 'reset'; 
+    type?: 'submit' | 'button' | 'reset';
     className?: string;
     loading?: boolean;
     tabIndex?: number;
-}   
+}
 
 export interface ErrorBoundaryProps {
     children: ReactNode;
@@ -294,4 +294,68 @@ export interface AddRecipeProps {
     successMessage: string;
     showSnackbar: boolean;
     imageUploadSuccess: boolean;
+}
+
+export interface ProfileProps {
+    _id: string;
+    name: string;
+    profileImage: string;
+    follow: boolean;
+    unfollow: boolean;
+    followback: boolean;
+}
+
+export interface ProfileListProps {
+    profiles: any[];
+    totalPages: number;
+    page: number;
+    loading: boolean;
+    errorMessage: string;
+    showErrorModal: boolean;
+    searchParams: SearchParamsProps;
+    notFound: boolean;
+    showSnackbar: boolean;
+    successMessage: string;
+}
+
+export interface EditProfileProps {
+    values: {
+        name: string;
+        email: string;
+        password: string;
+        confirmPassword: string;
+        bio: string;
+        favouriteRecipe: string
+    };
+    errors: {
+        name: string;
+        email: string;
+        password: string;
+        confirmPassword: string;
+    };
+    loading: boolean;
+    errorMessage: string;
+    showSnackbar: boolean;
+    successMessage: string;
+}
+
+export interface MessageProps {
+    content: string;
+    createdAt: string;
+    sender: string | null;
+    receiver: string;
+    accesstoken: string | null;
+    userId: string | null;
+}
+
+export interface ChatStateProps {
+    messages: MessageProps[];
+    loading: boolean;
+    errorMessage: string;
+}
+
+export interface MessageStateProps {
+    sender: string;
+    receiver: string;
+    receiverName: string;
 }
