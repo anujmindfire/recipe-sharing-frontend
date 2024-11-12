@@ -6,13 +6,15 @@ import { RootState } from '../../store/redux/store';
 import { setRecipes, setTotalPages, setPage, setLoading, setUniquePrepTimes, setUniqueCookTimes, setErrorMessage, setShowErrorModal, setNotFound, setSearchParams } from '../../store/context/recpieListSlice';
 import { sortTimes, handleModalClose } from '../../utils/commonFunction';
 import { apiService } from '../../apiService/service';
-import RecipeCard from '../../components/RecipeCard';
-import SearchFilterBar from '../../components/SearchFilterBar';
-import authenicatedRoute from '../../utils/authenticatedRouteGuard';
-import Loader from '../../components/Loader';
-import ErrorModal from '../../components/ErrorModal';
-import ErrorBoundary from '../../components/ErrorBoundary';
 import constant from '../../utils/constant';
+import dynamic from 'next/dynamic';
+
+// Dynamically import components
+const RecipeCard = dynamic(() => import('../../components/RecipeCard'), { ssr: false });
+const SearchFilterBar = dynamic(() => import('../../components/SearchFilterBar'), { ssr: false });
+const Loader = dynamic(() => import('../../components/Loader'), { ssr: false });
+const ErrorModal = dynamic(() => import('../../components/ErrorModal'), { ssr: false });
+const ErrorBoundary = dynamic(() => import('../../components/ErrorBoundary'), { ssr: false });
 
 const { Content } = Layout;
 
@@ -165,5 +167,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
 };
 
-
-export default authenicatedRoute(RecipeList);
+export default RecipeList;

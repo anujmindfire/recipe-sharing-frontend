@@ -3,6 +3,15 @@ import constant from './constant';
 import { useRouter } from 'next/router';
 import { RefreshTokenResponseProps, RefreshAccessTokenParamsProps } from '../interface/Interface';
 
+/**
+ * Function to refresh the access token using a refresh token.
+ * It sends a POST request to the API with the refresh token and user ID.
+ * On success, it updates the access token in local storage.
+ * If the user is logged out or signout is true, it clears the local storage and redirects to the sign-in page.
+ * 
+ * @param {RefreshAccessTokenParamsProps} params - Contains the refresh token and user ID.
+ * @returns {Promise<{ success: boolean; data?: any; message?: string }>} A promise that resolves to an object with success status and token data or error message.
+ */
 export const refreshAccessToken = async ({
     refreshToken,
     userId,
@@ -38,6 +47,10 @@ export const refreshAccessToken = async ({
     }
 };
 
+/**
+ * Clears all the relevant user data from local storage.
+ * This includes access token, refresh token, user ID, and user name.
+ */
 export const clearLocalStorage = (): void => {
     localStorage.removeItem(constant.localStorageKeys.accessToken);
     localStorage.removeItem(constant.localStorageKeys.refreshToken);

@@ -3,6 +3,7 @@ import { ErrorBoundaryProps, ErrorBoundaryState } from '../interface/Interface';
 import { Button } from 'antd';
 import { useRouter } from 'next/router';
 import constant from '../utils/constant';
+import logger from '../utils/logger';
 
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     constructor(props: ErrorBoundaryProps) {
@@ -15,7 +16,11 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     }
 
     componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-        throw new Error('Error caught in ErrorBoundary:', error);
+        logger.error('Error caught in ErrorBoundary:', {
+            message: error.message,
+            stack: error.stack,
+            errorInfo: errorInfo.componentStack,
+        });
     }
 
     renderErrorPage = () => {

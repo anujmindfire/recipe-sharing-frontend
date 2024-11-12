@@ -3,6 +3,14 @@ import { buttonType } from '../utils/constant';
 import { Button as AntButton } from 'antd';
 import { ButtonProps } from '../interface/Interface';
 
+/**
+ * Custom Button component that wraps the Ant Design Button.
+ * It provides additional customization options like button type, loading state, and custom styles.
+ * 
+ * @param {ButtonProps} props - The props for the button component, including children, onClick, type, className, loading, tabIndex, and other properties.
+ * @returns {React.FC} A styled button component that utilizes Ant Design's Button.
+ */
+
 const Button: React.FC<ButtonProps> = ({
     children,
     onClick,

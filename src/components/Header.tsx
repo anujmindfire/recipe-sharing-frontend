@@ -11,6 +11,15 @@ import { apiService } from '../apiService/service';
 import { HeaderProps, NotificationProps } from '../interface/Interface';
 import { clearLocalStorage } from '../utils/tokenRefresher';
 
+/**
+ * Header component displaying the top navigation bar with user information,
+ * notifications, and authentication status. Includes socket connection for real-time notifications.
+ * 
+ * Handles user login/logout, shows the notifications sidebar, and displays an error modal if there is an issue.
+ * 
+ * @returns {React.FC} A header with user information, a logo, navigation links, and a dropdown menu with user actions.
+ */
+
 const Header: React.FC = () => {
     const router = useRouter();
     const [status, setStatus] = useState<HeaderProps>({

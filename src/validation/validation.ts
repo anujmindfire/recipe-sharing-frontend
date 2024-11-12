@@ -5,6 +5,17 @@ import { FormDataProps } from '../interface/Interface';
 
 type ValidateFn<T> = (name: keyof T, value: string, formData: T) => string;
 
+/**
+ * Validates a form field based on its name and value.
+ * This function checks the value against regex patterns and ensures the length is within the required range for specific fields.
+ * It returns an appropriate validation message or an empty string if the value is valid.
+ * 
+ * @param {string} name - The name of the field being validated.
+ * @param {string} value - The value of the field being validated.
+ * @param {FormDataProps} formData - The current form data containing all the field values and errors.
+ * @returns {string} A validation message if validation fails, or an empty string if validation passes.
+ */
+
 const validateField = (
     name: string,
     value: string,
@@ -69,6 +80,18 @@ const validateField = (
     }
 };
 
+/**
+ * Creates an event handler for form field changes that validates the input and updates the state.
+ * This function sanitizes the input value using DOMPurify, validates the value with a validation function,
+ * and dispatches actions to update the field value and errors in the form state.
+ * 
+ * @param {React.Dispatch<any>} dispatch - The dispatch function to update the state.
+ * @param {ValidateFn<T>} validateFn - The validation function to validate the field value.
+ * @param {T} formData - The current form data to be passed to the validation function.
+ * @param {Function} setFieldAction - The action creator to update the field value in the form state.
+ * @param {Function} setErrorsAction - The action creator to update the form validation errors in the state.
+ * @returns {Function} A function to handle field changes and update the state.
+ */
 const createHandleChange = <T extends Record<string, any>>(
     dispatch: React.Dispatch<any>,
     validateFn: ValidateFn<T>,

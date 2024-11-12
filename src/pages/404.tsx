@@ -4,6 +4,16 @@ import { useRouter } from 'next/router';
 import ErrorBoundary from '../components/ErrorBoundary';
 import constant from '../utils/constant';
 
+/**
+ * NotFound component that handles the 404 error page when a user navigates to a non-existent route.
+ * It displays a message indicating that the page is not found and provides a button to redirect
+ * the user to the home page or sign-in page based on their authentication status.
+ * 
+ * Uses ErrorBoundary to catch and display any errors that may occur within the component.
+ * 
+ * A 404 error page with a message and a button to navigate the user back to the home page or sign-in page.
+ */
+
 const NotFound = () => {
     const router = useRouter();
 

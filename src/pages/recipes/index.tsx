@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useMemo } from 'react';
 import { Layout } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/redux/store';
@@ -16,8 +16,16 @@ import constant from '../../utils/constant';
 const { Content } = Layout;
 
 const RecipeList = () => {
+
     const dispatch = useDispatch();
     const { recipes, totalPages, page, loading, allUniquePrepTimes, allUniqueCookTimes, errorMessage, showErrorModal, searchParams, notFound } = useSelector((state: RootState) => state.recipeList);
+    
+    const initialSearchParams = useMemo(() => ({
+        query: searchParams.query,
+        rating: searchParams.rating,
+        prepTime: searchParams.prepTime,
+        cookTime: searchParams.cookTime,
+    }), []);
 
     const accesstoken = typeof window !== 'undefined' ? localStorage.getItem(constant.localStorageKeys.accessToken) : null;
     const userId = typeof window !== 'undefined' ? localStorage.getItem(constant.localStorageKeys.userId) : null;
@@ -28,10 +36,7 @@ const RecipeList = () => {
 
         const payload = {
             page,
-            query: searchParams.query,
-            rating: searchParams.rating,
-            prepTime: searchParams.prepTime,
-            cookTime: searchParams.cookTime,
+            initialSearchParams,
             accesstoken,
             userId,
         };
