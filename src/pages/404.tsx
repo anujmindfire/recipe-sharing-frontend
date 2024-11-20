@@ -21,7 +21,7 @@ const NotFound = () => {
         const accesstoken = typeof window !== 'undefined' ? localStorage.getItem(constant.localStorageKeys.accessToken) : null;
 
         if (accesstoken) {
-            router.push('/recipes');
+            router.push(constant.routes.recipes);
         } else {
             router.push(constant.routes.signIn);
         }

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ProfileListProps, SearchParamsProps } from '../../interface/Interface';
+import { ProfileListProps, SearchParamsProps } from '../../types/types';
 
 const initialState: ProfileListProps = {
     profiles: [],

@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setField, setErrors, setLoading, setErrorMessage, setSuccessMessage, toggleSnackbar, setImageUploadSuccess } from '../../store/context/appRecipeSlice';
 import { RootState } from '../../store/redux/store';
 import { validateField, createHandleChange } from '../../validation/validation';
-import { AddRecipeProps } from '../../interface/Interface';
+import { AddRecipeProps } from '../../types/types';
 import { apiService } from '../../apiService/service';
 
 const AddRecipe = () => {

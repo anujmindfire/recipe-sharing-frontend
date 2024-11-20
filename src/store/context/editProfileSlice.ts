@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { EditProfileProps } from '../../interface/Interface';
+import { EditProfileProps } from '../../types/types';
 
 const initialState: EditProfileProps = {
     values: {

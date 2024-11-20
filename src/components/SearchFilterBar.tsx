@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { SearchFilterBarProps } from '../interface/Interface';
+import { SearchFilterBarProps } from '../types/types';
 import useDebounce from './UseDebounce';
 import constant from '../utils/constant';
 import Image from 'next/image';

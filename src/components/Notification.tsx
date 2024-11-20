@@ -1,7 +1,7 @@
 import React from 'react';
 import constant from '../utils/constant';
 import { DeleteOutlined } from '@ant-design/icons';
-import { NotificationCompProps } from '../interface/Interface';
+import { NotificationCompProps } from '../types/types';
 
 const Notification: React.FC<NotificationCompProps> = ({
     isOpen,

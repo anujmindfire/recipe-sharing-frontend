@@ -1,7 +1,7 @@
 import DOMPurify from 'dompurify';
 import regex from './regex';
 import constant from '../utils/constant';
-import { FormDataProps } from '../interface/Interface';
+import { FormDataProps } from '../types/types';
 
 type ValidateFn<T> = (name: keyof T, value: string, formData: T) => string;
 

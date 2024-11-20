@@ -1,6 +1,5 @@
 import Loader from '../../components/Loader';
 import ErrorBoundary from '../../components/ErrorBoundary';
-import authenicateRoute from '../../utils/authenticatedRouteGuard';
 import constant, { buttonType } from '../../utils/constant';
 import io from 'socket.io-client';
 import React, { useState, useEffect, useCallback, FormEvent } from 'react';
@@ -8,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/redux/store';
 import { setMessage, setLoading, setErrorMessage } from '../../store/context/messageSlice';
 import { apiService } from '../../apiService/service';
-import { MessageStateProps, MessageProps } from '../../interface/Interface';
+import { MessageStateProps, MessageProps } from '../../types/types';
 
 const Message: React.FC<MessageStateProps> = ({ sender, receiver, receiverName }) => {
     const dispatch = useDispatch();
@@ -147,4 +146,4 @@ const Message: React.FC<MessageStateProps> = ({ sender, receiver, receiverName }
     )
 }
 
-export default authenicateRoute(Message);
+export default Message;

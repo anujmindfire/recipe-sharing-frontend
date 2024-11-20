@@ -12,7 +12,7 @@ import { RootState } from '../../store/redux/store';
 import { setProfile, setTotalPages, setPage, setLoading, setErrorMessage, setShowErrorModal, setNotFound, setSearchParams } from '../../store/context/profileListSlice';
 import { apiService } from '../../apiService/service';
 import { handleModalClose } from '../../utils/commonFunction';
-import { ProfileProps } from '../../interface/Interface';
+import { ProfileProps } from '../../types/types';
 
 const ChatSidebar = () => {
     const dispatch = useDispatch();

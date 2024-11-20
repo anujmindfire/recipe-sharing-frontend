@@ -1,5 +1,5 @@
 import React from 'react';
-import { ModalProps } from '../interface/Interface';
+import { ModalProps } from '../types/types';
 
 const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children }) => {
     if (!isVisible) return null;

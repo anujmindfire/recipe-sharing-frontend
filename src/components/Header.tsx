@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { io, Socket } from 'socket.io-client';
 import { apiService } from '../apiService/service';
-import { HeaderProps, NotificationProps } from '../interface/Interface';
+import { HeaderProps, NotificationProps } from '../types/types';
 import { clearLocalStorage } from '../utils/tokenRefresher';
 
 /**

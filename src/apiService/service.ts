@@ -1,4 +1,4 @@
-import { Payload, ApiError } from '../interface/Interface';
+import { Payload, ApiError } from '../types/types';
 import axios, { AxiosError } from 'axios';
 import { refreshAccessToken } from '../utils/tokenRefresher';
 import constant from '../utils/constant';
@@ -137,3 +137,5 @@ export const apiCalls = async (payload: Payload, keys: string) => {
             throw new Error('Invalid API call');
     }
 };
+
+// redux toolkit query for caching.

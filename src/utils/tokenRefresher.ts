@@ -1,7 +1,7 @@
 import axios from 'axios';
 import constant from './constant';
 import { useRouter } from 'next/router';
-import { RefreshTokenResponseProps, RefreshAccessTokenParamsProps } from '../interface/Interface';
+import { RefreshTokenResponseProps, RefreshAccessTokenParamsProps } from '../types/types';
 
 /**
  * Function to refresh the access token using a refresh token.

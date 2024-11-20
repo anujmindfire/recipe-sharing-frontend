@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Alert } from 'antd';
-import { ValidationProps } from '../interface/Interface';
+import { ValidationProps } from '../types/types';
 
 const Validation: FC<ValidationProps> = ({ error, show }) => {
     return show && error ? (

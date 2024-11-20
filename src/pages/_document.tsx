@@ -7,7 +7,6 @@ class MyDocument extends Document {
                 <title>Foodie - Your Recipe Hub</title>
                 <meta name='viewport' content='width=device-width, initial-scale=1' />
                 <Head>
-                    <meta charSet='UTF-8' />
                     <meta name='description' content='Foodie - Explore recipes, share your culinary creations, and enjoy delicious dishes.' />
                     <meta name='keywords' content='Foodie, Recipes, Cooking, Food, Culinary, Delicious' />
                     <meta name='author' content='Foodie Team' />
@@ -15,7 +14,6 @@ class MyDocument extends Document {
                     <meta property='og:title' content='Foodie - Your Recipe Hub' />
                     <meta property='og:description' content='Explore and share recipes on Foodie.' />
                     <meta property='og:type' content='website' />
-                    <meta property='og:url' content='https://yourwebsite.com' />
                     <meta property='og:image' content='/logo.png' />
                     <meta property='og:locale' content='en_US' />
 

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { SignInProps } from '../../interface/Interface';
+import { SignInProps } from '../../types/types';
 
 const initialState: SignInProps = {
     values: { email: '', password: '' },

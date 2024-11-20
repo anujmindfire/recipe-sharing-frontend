@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { SignUpProps } from '../../interface/Interface';
+import { SignUpProps } from '../../types/types';
 
 const initialState: SignUpProps = {
     values: { name: '', email: '', password: '' },

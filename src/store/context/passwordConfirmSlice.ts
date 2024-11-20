@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { PasswordConfirmationProps } from '../../interface/Interface';
+import { PasswordConfirmationProps } from '../../types/types';
 
 const initialState: PasswordConfirmationProps = {
     values: { password: '', confirmPassword: '' },

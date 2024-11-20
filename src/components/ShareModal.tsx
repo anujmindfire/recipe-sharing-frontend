@@ -10,7 +10,7 @@ import {
 } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
 import { FacebookOutlined, TwitterOutlined, InstagramOutlined, WhatsAppOutlined } from '@ant-design/icons';
-import { ShareModalProps } from '../interface/Interface';
+import { ShareModalProps } from '../types/types';
 import constant from '../utils/constant';
 
 const { Text } = Typography;

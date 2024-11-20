@@ -1,6 +1,6 @@
 import React from 'react';
 import Sidebar from '../../components/Sidebar';
-import { ProfileLayoutProps } from '../../interface/Interface';
+import { ProfileLayoutProps } from '../../types/types';
 import { Layout } from 'antd';
 
 const { Content } = Layout;

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ForgotPasswordProps } from '../../interface/Interface';
+import { ForgotPasswordProps } from '../../types/types';
 
 const initialState: ForgotPasswordProps = {
     values: { email: '' },

@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Card, Rate } from 'antd';
-import { RecipeCardProps } from '../interface/Interface';
+import { RecipeCardProps } from '../types/types';
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipes }) => {
     return (

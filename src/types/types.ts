@@ -355,7 +355,7 @@ export interface ChatStateProps {
 }
 
 export interface MessageStateProps {
-    sender: string;
+    sender: string | null;
     receiver: string;
     receiverName: string;
 }

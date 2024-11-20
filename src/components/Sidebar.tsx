@@ -4,7 +4,7 @@ import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import authenicateRoute from '../utils/authenticatedRouteGuard';
 import constant from '../utils/constant';
-import { MenuItem } from '../interface/Interface';
+import { MenuItem } from '../types/types';
 
 const Sidebar = () => {
     const [isToggleOpen, setIsToggleOpen] = useState(true);

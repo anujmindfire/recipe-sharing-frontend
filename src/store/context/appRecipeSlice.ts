@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AddRecipeProps } from '../../interface/Interface';
+import { AddRecipeProps } from '../../types/types';
 
 const initialState: AddRecipeProps = {
     values: {

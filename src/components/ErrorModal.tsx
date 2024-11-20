@@ -1,7 +1,7 @@
 import React from 'react';
 import constant from '../utils/constant';
 import { Modal, Button } from 'antd';
-import { ErrorModalProps } from '../interface/Interface';
+import { ErrorModalProps } from '../types/types';
 
 /**
  * ErrorModal component that displays an error message in a modal.

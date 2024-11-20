@@ -13,7 +13,7 @@ import { RootState } from '../../store/redux/store';
 import { setProfile, setTotalPages, setPage, setSuccessMessage, toggleSnackbar, setLoading, setErrorMessage, setShowErrorModal, setNotFound, setSearchParams } from '../../store/context/profileListSlice';
 import { handleModalClose } from '../../utils/commonFunction';
 import { apiService } from '../../apiService/service';
-import { ProfileProps } from '../../interface/Interface';
+import { ProfileProps } from '../../types/types';
 
 const ProfileList = () => {
     const dispatch = useDispatch();

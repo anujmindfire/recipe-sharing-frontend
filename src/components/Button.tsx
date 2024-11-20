@@ -1,7 +1,7 @@
 import React from 'react';
 import { buttonType } from '../utils/constant';
 import { Button as AntButton } from 'antd';
-import { ButtonProps } from '../interface/Interface';
+import { ButtonProps } from '../types/types';
 
 /**
  * Custom Button component that wraps the Ant Design Button.

@@ -1,5 +1,5 @@
 import React, { Component, ErrorInfo } from 'react';
-import { ErrorBoundaryProps, ErrorBoundaryState } from '../interface/Interface';
+import { ErrorBoundaryProps, ErrorBoundaryState } from '../types/types';
 import { Button } from 'antd';
 import { useRouter } from 'next/router';
 import constant from '../utils/constant';

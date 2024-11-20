@@ -1,6 +1,6 @@
 import React from 'react';
 import { Input } from 'antd';
-import { InputFieldProps } from '../interface/Interface';
+import { InputFieldProps } from '../types/types';
 
 const InputField: React.FC<InputFieldProps> = ({
     id,
